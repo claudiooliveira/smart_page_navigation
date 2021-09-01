@@ -1,7 +1,8 @@
 name: smart_page_navigation
 description: This package will provide a full navigation through tabs at the bottom of the application screen.
-version: 1.0.1
+version: 1.0.2
 homepage: https://devmagic.com.br/
+repository: https://github.com/claudiooliveira/smart_page_navigation
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
