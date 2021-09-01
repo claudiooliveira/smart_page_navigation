@@ -7,11 +7,13 @@ class SmartPageController extends InheritedWidget {
   List<StatefulWidget> initialPages = [];
   List<int> pageHistory = [0];
   List<int> pageHistoryTabSelected = [0];
+  int currentBottomIndex = 0;
 
   int? initialPage = 0;
   bool? keepPage = true;
   List<Function> _onBackPageListeners = [];
   List<Function(StatefulWidget page)> _onInsertPageListeners = [];
+  List<Function(int page)> _onPageChangedListeners = [];
 
   SmartPageController({required Widget child, Key? key})
       : super(key: key, child: child);
@@ -45,15 +47,19 @@ class SmartPageController extends InheritedWidget {
     this._onInsertPageListeners.add(listener);
   }
 
+  addOnPageChangedListener(Function(int index) listener) {
+    this._onPageChangedListeners.add(listener);
+  }
+
   insertPage(StatefulWidget newPage, {bool? goToNewPage = true}) {
     if (goToNewPage == null) {
       goToNewPage = true;
     }
     this.pages.add(newPage);
     pageHistoryTabSelected.add(pageHistory[pageHistoryTabSelected.length - 1]);
-    goToPage(this.pages.length - 1, true);
-    for (var i = 0; i < this._onInsertPageListeners.length; i++) {
-      this._onInsertPageListeners[i](newPage);
+    this._onInsertPageListeners.forEach((func) => func(newPage));
+    if (goToNewPage) {
+      goToPage(this.pages.length - 1, true);
     }
   }
 
@@ -62,8 +68,12 @@ class SmartPageController extends InheritedWidget {
         dontUpdateHistoryTabSelected == null) {
       pageHistoryTabSelected.add(index);
     }
+    if (index < initialPages.length) {
+      currentBottomIndex = index;
+    }
     pageHistory.add(index);
     _pageViewController!.jumpToPage(index);
+    this._onPageChangedListeners.forEach((func) => func(index));
   }
 
   getPageViewController() {
@@ -86,6 +96,11 @@ class SmartPageController extends InheritedWidget {
         pageHistory.removeAt(pageHistory.length - 1);
         pageHistoryTabSelected.removeAt(pageHistoryTabSelected.length - 1);
       }
+
+      if (lastPage < initialPages.length) {
+        currentBottomIndex = lastPage;
+      }
+
       _pageViewController!.jumpToPage(
         lastPage,
       );

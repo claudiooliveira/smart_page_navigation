@@ -53,6 +53,14 @@ class _MyHomePageState extends State<MyHomePage> {
         body: SmartPageNavigation(
           controller: controller,
         ),
+        bottomNavigationBar: SmartPageBottomNavigationBar(
+          controller: controller,
+          children: [
+            BottomIcon(icon: Icons.home),
+            BottomIcon(icon: Icons.shopping_cart),
+            BottomIcon(icon: Icons.settings),
+          ],
+        ),
       ),
     );
   }
