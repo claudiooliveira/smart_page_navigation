@@ -60,6 +60,9 @@ class _MyHomePageState extends State<MyHomePage> {
             BottomIcon(icon: Icons.shopping_cart),
             BottomIcon(icon: Icons.settings),
           ],
+          onTap: (int index) {
+            print("Clicked at index $index");
+          },
         ),
       ),
     );
@@ -81,6 +84,8 @@ class _PageAState extends State<PageA> {
     controller = SmartPageController.of(context);
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             "Page A",
@@ -116,6 +121,8 @@ class _PageBState extends State<PageB> {
       color: Colors.redAccent,
       child: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               "Page B",
@@ -157,6 +164,8 @@ class _PageCState extends State<PageC> {
       color: Colors.blueAccent,
       child: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               "Page C",
@@ -193,6 +202,8 @@ class _PageChildState extends State<PageChild> {
       color: Colors.blueGrey,
       child: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Flexible(
               child: Text(
@@ -234,6 +245,8 @@ class _ExternalPageState extends State<ExternalPage> {
         color: Colors.green,
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 "External Page",

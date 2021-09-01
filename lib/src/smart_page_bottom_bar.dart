@@ -6,11 +6,13 @@ class SmartPageBottomNavigationBar extends StatefulWidget {
   SmartPageController controller;
   SmartPageBottomNavigationOptions? options;
   List<BottomIcon> children;
+  Function(int index)? onTap;
   SmartPageBottomNavigationBar({
     Key? key,
     required this.controller,
     required this.children,
     this.options,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -83,8 +85,8 @@ class _SmartPageBottomNavigationBarState
                       } else {
                         widget.controller.goToPage(currentIndex);
                       }
-                      if (bottomIcon.onTap != null) {
-                        bottomIcon.onTap!();
+                      if (widget.onTap != null) {
+                        widget.onTap!(currentIndex);
                       }
                       setState(() {});
                     },
@@ -147,9 +149,7 @@ class BottomIcon {
   IconData? icon;
   String? title;
   TextStyle? textStyle;
-  Function? onTap;
   BottomIcon({
-    this.onTap,
     this.selectedWidget,
     this.unselectedWidget,
     this.icon,
