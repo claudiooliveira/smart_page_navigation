@@ -6,7 +6,7 @@ In this Flutter package you will have full navigation with bottom navigation bar
 
 Created by Claudio Oliveira (https://twitter.com/cldlvr)
 
-![Gif](https://github.com/claudiooliveira/smart_page_navigation/blob/main/live_example.gif "Fancy Gif")
+<img src="https://github.com/claudiooliveira/smart_page_navigation/blob/main/live_example.gif" alt="Live Example" width="300"/>
 
 ### Add dependency
 
