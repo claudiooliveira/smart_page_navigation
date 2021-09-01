@@ -77,7 +77,9 @@ class _SmartPageBottomNavigationBarState
                           widget.controller.initialPages[currentIndex];
                       if (widget.controller.pages.length >
                           widget.controller.initialPages.length) {
-                        widget.controller.insertPage(pageToRedirect);
+                        widget.controller
+                            .insertPage(pageToRedirect, ignoreTabHistory: true);
+                        widget.controller.selectBottomTab(currentIndex);
                       } else {
                         widget.controller.goToPage(currentIndex);
                       }

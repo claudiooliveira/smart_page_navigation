@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class SmartPageNavigationOptions {
+class SmartPageNavigationOptions {
   Axis? axis;
   ScrollPhysics? physics;
 }

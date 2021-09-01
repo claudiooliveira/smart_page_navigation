@@ -124,9 +124,15 @@ class _PageBState extends State<PageB> {
             SizedBox(height: 60),
             ElevatedButton(
               onPressed: () {
-                controller.insertPage(PageChild(title: "Page B"));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ExternalPage(),
+                  ),
+                );
+                //controller.insertPage(PageChild(title: "Page B"));
               },
-              child: Text("Open Page"),
+              child: Text("Open External Page"),
             ),
           ],
         ),
@@ -203,6 +209,53 @@ class _PageChildState extends State<PageChild> {
               child: Text("Open Page"),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ExternalPage extends StatefulWidget {
+  ExternalPage({Key? key}) : super(key: key);
+
+  @override
+  _ExternalPageState createState() => _ExternalPageState();
+}
+
+class _ExternalPageState extends State<ExternalPage> {
+  late SmartPageController controller;
+  @override
+  Widget build(BuildContext context) {
+    controller = SmartPageController.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("External Page"),
+      ),
+      body: Container(
+        color: Colors.green,
+        child: Center(
+          child: Column(
+            children: [
+              Text(
+                "External Page",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              SizedBox(height: 60),
+              ElevatedButton(
+                onPressed: () {
+                  controller.resetNavigation();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyHomePage(),
+                    ),
+                    (route) => false,
+                  );
+                },
+                child: Text("Go to Home and reset navigation stack"),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class SmartPageController extends InheritedWidget {
   PageController? _pageViewController;
   List<StatefulWidget> pages = [];
@@ -51,12 +50,16 @@ class SmartPageController extends InheritedWidget {
     this._onPageChangedListeners.add(listener);
   }
 
-  insertPage(StatefulWidget newPage, {bool? goToNewPage = true}) {
+  insertPage(StatefulWidget newPage,
+      {bool? goToNewPage = true, bool? ignoreTabHistory = false}) {
     if (goToNewPage == null) {
       goToNewPage = true;
     }
     this.pages.add(newPage);
-    pageHistoryTabSelected.add(pageHistory[pageHistoryTabSelected.length - 1]);
+    if (ignoreTabHistory == null || ignoreTabHistory == false) {
+      pageHistoryTabSelected
+          .add(pageHistoryTabSelected[pageHistoryTabSelected.length - 1]);
+    }
     this._onInsertPageListeners.forEach((func) => func(newPage));
     if (goToNewPage) {
       goToPage(this.pages.length - 1, true);
@@ -69,26 +72,40 @@ class SmartPageController extends InheritedWidget {
       pageHistoryTabSelected.add(index);
     }
     if (index < initialPages.length) {
-      currentBottomIndex = index;
+      this.currentBottomIndex = index;
     }
     pageHistory.add(index);
     _pageViewController!.jumpToPage(index);
     this._onPageChangedListeners.forEach((func) => func(index));
   }
 
+  selectBottomTab(int index) {
+    this.currentBottomIndex = index;
+    this.pageHistoryTabSelected.add(index);
+  }
+
   getPageViewController() {
     return this._pageViewController;
   }
 
+  resetNavigation({bool? resetListeners = true}) {
+    pages.clear();
+    pages.addAll(this.initialPages);
+    pageHistory = [0];
+    pageHistoryTabSelected = [0];
+    currentBottomIndex = 0;
+    if (resetListeners == null || resetListeners == true) {
+      _onBackPageListeners = [];
+      _onInsertPageListeners = [];
+      _onPageChangedListeners = [];
+    }
+  }
+
   bool back() {
     if (pages.length > initialPages.length) {
-      //print("remove ${pages.length} : ${initialPages.length}");
       pages.removeAt(pages.length - 1);
     }
 
-    /*print(
-        "updated ${pages.length}; Initial: ${initialPages.length}; Current page: ${_pageViewController!.page!}");
-*/
     if (_pageViewController!.page! > 0) {
       var lastPage = pageHistory[pageHistory.length - 1];
       if (pageHistory.length >= 2) {
@@ -97,17 +114,16 @@ class SmartPageController extends InheritedWidget {
         pageHistoryTabSelected.removeAt(pageHistoryTabSelected.length - 1);
       }
 
-      if (lastPage < initialPages.length) {
-        currentBottomIndex = lastPage;
+      if (pageHistoryTabSelected.length >= 1) {
+        currentBottomIndex =
+            pageHistoryTabSelected[pageHistoryTabSelected.length - 1];
       }
 
       _pageViewController!.jumpToPage(
         lastPage,
       );
 
-      this._onBackPageListeners.forEach((func) {
-        func();
-      });
+      this._onBackPageListeners.forEach((func) => func());
 
       return false;
     }
