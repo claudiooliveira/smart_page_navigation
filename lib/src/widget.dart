@@ -22,7 +22,8 @@ class _SmartPageNavigationState extends State<SmartPageNavigation> {
   @override
   void initState() {
     super.initState();
-    //TODO: adicionar um listener que dispara um setState para mudar a página quando o insertPage for executado
+    widget.controller.addOnBackPageListener(() => setState(() {}));
+    widget.controller.addOnInsertPageListener((page) => setState(() {}));
   }
 
   @override

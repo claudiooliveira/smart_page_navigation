@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class SmartPageController extends InheritedWidget {
   PageController? _pageViewController;
   List<StatefulWidget> pages = [];
   List<StatefulWidget> initialPages = [];
   List<int> pageHistory = [0];
   List<int> pageHistoryTabSelected = [0];
-  SmartPageController? _instance;
 
   int? initialPage = 0;
   bool? keepPage = true;
-  Function? _onBackPage;
+  List<Function> _onBackPageListeners = [];
+  List<Function(StatefulWidget page)> _onInsertPageListeners = [];
 
   SmartPageController({required Widget child, Key? key})
       : super(key: key, child: child);
@@ -37,13 +38,32 @@ class SmartPageController extends InheritedWidget {
       context.dependOnInheritedWidgetOfExactType<SmartPageController>()!;
 
   addOnBackPageListener(Function listener) {
-    this._onBackPage = listener;
+    this._onBackPageListeners.add(listener);
+  }
+
+  addOnInsertPageListener(Function(StatefulWidget page) listener) {
+    this._onInsertPageListeners.add(listener);
   }
 
   insertPage(StatefulWidget newPage, {bool? goToNewPage = true}) {
     if (goToNewPage == null) {
       goToNewPage = true;
     }
+    this.pages.add(newPage);
+    pageHistoryTabSelected.add(pageHistory[pageHistoryTabSelected.length - 1]);
+    goToPage(this.pages.length - 1, true);
+    for (var i = 0; i < this._onInsertPageListeners.length; i++) {
+      this._onInsertPageListeners[i](newPage);
+    }
+  }
+
+  goToPage(int index, [bool? dontUpdateHistoryTabSelected]) {
+    if (dontUpdateHistoryTabSelected == false ||
+        dontUpdateHistoryTabSelected == null) {
+      pageHistoryTabSelected.add(index);
+    }
+    pageHistory.add(index);
+    _pageViewController!.jumpToPage(index);
   }
 
   getPageViewController() {
@@ -52,9 +72,13 @@ class SmartPageController extends InheritedWidget {
 
   bool back() {
     if (pages.length > initialPages.length) {
+      //print("remove ${pages.length} : ${initialPages.length}");
       pages.removeAt(pages.length - 1);
     }
 
+    /*print(
+        "updated ${pages.length}; Initial: ${initialPages.length}; Current page: ${_pageViewController!.page!}");
+*/
     if (_pageViewController!.page! > 0) {
       var lastPage = pageHistory[pageHistory.length - 1];
       if (pageHistory.length >= 2) {
@@ -65,9 +89,10 @@ class SmartPageController extends InheritedWidget {
       _pageViewController!.jumpToPage(
         lastPage,
       );
-      if (this._onBackPage != null) {
-        this._onBackPage!();
-      }
+
+      this._onBackPageListeners.forEach((func) {
+        func();
+      });
 
       return false;
     }
