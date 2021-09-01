@@ -130,7 +130,6 @@ class _PageBState extends State<PageB> {
                     builder: (context) => ExternalPage(),
                   ),
                 );
-                //controller.insertPage(PageChild(title: "Page B"));
               },
               child: Text("Open External Page"),
             ),
