@@ -2,9 +2,11 @@
 
 [pub package](https://pub.dartlang.org/packages/smart_page_navigation)
 
-In this Flutter pack you will have full navigation with bottom navigation bar exactly like the way Instagram works.
+In this Flutter package you will have full navigation with bottom navigation bar exactly like the way Instagram works.
 
 Created by Claudio Oliveira (https://twitter.com/cldlvr)
+
+![Gif](https://github.com/claudiooliveira/smart_page_navigation/live_example.gif "Fancy Gif")
 
 ### Add dependency
 
