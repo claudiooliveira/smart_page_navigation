@@ -4,6 +4,8 @@
 
 In this Flutter pack you will have full navigation with bottom navigation bar exactly like the way Instagram works.
 
+Created by Claudio Oliveira (https://twitter.com/cldlvr)
+
 ### Add dependency
 
 ```yaml

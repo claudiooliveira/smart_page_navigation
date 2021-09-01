@@ -1,3 +1,3 @@
-## 0.0.1
+## 1.0.0
 
-* TODO: Describe initial release.
+* In this first version the navigation is complete with PageView and integrated to the Bottom Navigation Bar. In the next versions there will be improvements with animations.
