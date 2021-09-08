@@ -12,3 +12,6 @@
 * Fixed icon title display.
 
 ## 1.0.4
+
+* Small fixes
+* Badge support
