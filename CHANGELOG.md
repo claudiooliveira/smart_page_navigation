@@ -4,8 +4,9 @@
 
 ## 1.0.2
 
-* Doc updates
+* Doc updates.
 
 ## 1.0.3
 
-
+* Readme update with SmartPageBottomNavigationOptions options.
+* Fixed icon title display.
