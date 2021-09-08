@@ -38,6 +38,12 @@ class _SmartPageBottomNavigationBarState
           selectedColor: Colors.blueAccent,
           unselectedColor: Colors.grey,
         );
+
+    if (options.showBorder == null) options.showBorder = true;
+    if (options.selectedColor == null)
+      options.selectedColor = Colors.blueAccent;
+    if (options.unselectedColor == null) options.unselectedColor = Colors.grey;
+
     widget.controller.addOnBackPageListener(() => setState(() {}));
     widget.controller.addOnInsertPageListener((page) => setState(() {}));
     widget.controller.addOnPageChangedListener((index) => setState(() {}));
@@ -51,7 +57,7 @@ class _SmartPageBottomNavigationBarState
         height: options.height,
         decoration: BoxDecoration(
           color: options.backgroundColor,
-          border: options.showBorder
+          border: options.showBorder!
               ? Border(
                   top: BorderSide(
                     color: options.borderColor!,
@@ -71,8 +77,8 @@ class _SmartPageBottomNavigationBarState
                   bool isSelected =
                       widget.controller.currentBottomIndex == currentIndex;
                   Color color = isSelected
-                      ? options.selectedColor
-                      : options.unselectedColor;
+                      ? options.selectedColor!
+                      : options.unselectedColor!;
                   return InkWell(
                     onTap: () {
                       StatefulWidget pageToRedirect =
@@ -94,7 +100,7 @@ class _SmartPageBottomNavigationBarState
                       width: borderWidth,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       child: bottomIcon.icon != null
-                          ? Row(
+                          ? Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -104,14 +110,25 @@ class _SmartPageBottomNavigationBarState
                                 ),
                                 Visibility(
                                   visible: bottomIcon.title != null,
-                                  child: Text(
-                                    bottomIcon.title == null
-                                        ? ""
-                                        : bottomIcon.title!,
-                                    style: bottomIcon.textStyle != null
-                                        ? bottomIcon.textStyle!
-                                            .copyWith(color: color)
-                                        : TextStyle(color: color),
+                                  child: Container(
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 2),
+                                    child: Text(
+                                      bottomIcon.title == null
+                                          ? ""
+                                          : bottomIcon.title!,
+                                      textAlign: TextAlign.center,
+                                      style: bottomIcon.textStyle != null
+                                          ? bottomIcon.textStyle!
+                                              .copyWith(color: color)
+                                          : TextStyle(
+                                              color: color,
+                                              fontSize: 12,
+                                              fontWeight: isSelected
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                            ),
+                                    ),
                                   ),
                                 )
                               ],

@@ -56,9 +56,9 @@ class _MyHomePageState extends State<MyHomePage> {
         bottomNavigationBar: SmartPageBottomNavigationBar(
           controller: controller,
           children: [
-            BottomIcon(icon: Icons.home),
-            BottomIcon(icon: Icons.shopping_cart),
-            BottomIcon(icon: Icons.settings),
+            BottomIcon(icon: Icons.home, title: "Início"),
+            BottomIcon(icon: Icons.shopping_cart, title: "Carrinho"),
+            BottomIcon(icon: Icons.settings, title: "Config."),
           ],
           onTap: (int index) {
             print("Clicked at index $index");

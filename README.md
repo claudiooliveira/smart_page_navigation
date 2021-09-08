@@ -6,7 +6,7 @@ In this Flutter package you will have full navigation with bottom navigation bar
 
 Created by Claudio Oliveira (https://twitter.com/cldlvr)
 
-<img src="https://github.com/claudiooliveira/smart_page_navigation/blob/main/live_example.gif" alt="Live Example" width="300"/>
+<img src="https://github.com/claudiooliveira/smart_page_navigation/blob/main/live_example.gif?raw=true" alt="Live Example" width="300"/>
 
 ### Add dependency
 
@@ -97,3 +97,15 @@ class _MyHomePageState extends State<MyHomePage> {
 `controller`: Instance of SmartPageController\
 `children`: List of BottomIcon\
 `onTap(int index)`: Callback method when a bottom bar button is pressed\
+`options`: SmartPageBottomNavigationOptions instance with styling options
+
+### SmartPageBottomNavigationOptions
+
+`height`: (double) Widget height
+`showIndicator`: (bool) Show/hide top indicator of selected option
+`indicatorColor`: (Color) Top indicator color
+`backgroundColor`: (Color) Widget background color
+`showBorder`: (bool) Show/hide border
+`borderColor`: (Color) Border color
+`selectedColor`: (Color) Icon and text color when option is selected
+`unselectedColor`: (Color) Icon and text color when the option is not selected
