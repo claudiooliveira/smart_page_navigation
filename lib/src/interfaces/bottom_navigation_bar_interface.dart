@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class SmartPageBottomNavigationOptions {
   double? height = 50.0;
   bool? showIndicator = true;
-  Color? indicatorColor;
-  Color? backgroundColor;
+  Color? indicatorColor = Colors.blueAccent;
+  Color? backgroundColor = Colors.white;
   bool? showBorder = true;
-  Color? borderColor;
-  Color? selectedColor;
-  Color? unselectedColor;
+  Color? borderColor = Color(0xff707070).withOpacity(0.20);
+  Color? selectedColor = Colors.blueAccent;
+  Color? unselectedColor = Colors.grey;
   SmartPageBottomNavigationOptions({
     this.height,
     this.showIndicator,

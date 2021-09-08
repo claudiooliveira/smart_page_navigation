@@ -55,9 +55,22 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         bottomNavigationBar: SmartPageBottomNavigationBar(
           controller: controller,
+          options: SmartPageBottomNavigationOptions(),
           children: [
             BottomIcon(icon: Icons.home, title: "Início"),
-            BottomIcon(icon: Icons.shopping_cart, title: "Carrinho"),
+            BottomIcon(
+              icon: Icons.shopping_cart,
+              title: "Carrinho",
+              badge: Text(
+                "3",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              badgeColor: Colors.redAccent,
+            ),
             BottomIcon(icon: Icons.settings, title: "Config."),
           ],
           onTap: (int index) {

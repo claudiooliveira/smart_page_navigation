@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class SmartPageController extends InheritedWidget {
@@ -7,6 +9,8 @@ class SmartPageController extends InheritedWidget {
   List<int> pageHistory = [0];
   List<int> pageHistoryTabSelected = [0];
   int currentBottomIndex = 0;
+  Duration duration = Duration(milliseconds: 500);
+  int _currentPageIndex = 0;
 
   int? initialPage = 0;
   bool? keepPage = true;
@@ -30,6 +34,7 @@ class SmartPageController extends InheritedWidget {
         initialPage: this.initialPage!,
         keepPage: this.keepPage!,
       );
+      this._currentPageIndex = this.initialPage!;
       this.pages.addAll(this.initialPages);
     }
     return this;
@@ -55,28 +60,47 @@ class SmartPageController extends InheritedWidget {
     if (goToNewPage == null) {
       goToNewPage = true;
     }
-    this.pages.add(newPage);
+    //this.pages.add(newPage);
+    this.pages.insert(_currentPageIndex + 1, newPage);
     if (ignoreTabHistory == null || ignoreTabHistory == false) {
       pageHistoryTabSelected
           .add(pageHistoryTabSelected[pageHistoryTabSelected.length - 1]);
     }
     this._onInsertPageListeners.forEach((func) => func(newPage));
     if (goToNewPage) {
-      goToPage(this.pages.length - 1, true);
+      goToPage(_currentPageIndex + 1, ignoreTabHistory == false, true);
     }
   }
 
-  goToPage(int index, [bool? dontUpdateHistoryTabSelected]) {
+  goToPage(int index,
+      [bool? animated = true, bool? dontUpdateHistoryTabSelected]) {
     if (dontUpdateHistoryTabSelected == false ||
         dontUpdateHistoryTabSelected == null) {
       pageHistoryTabSelected.add(index);
     }
-    if (index < initialPages.length) {
+    _currentPageIndex = index;
+    if (index < initialPages.length &&
+        (dontUpdateHistoryTabSelected == null ||
+            dontUpdateHistoryTabSelected == false)) {
       this.currentBottomIndex = index;
     }
     pageHistory.add(index);
+    /*if (animated == true) {
+      _animateToPage(index);
+    } else {
+      _pageViewController!.jumpToPage(index);
+    }*/
     _pageViewController!.jumpToPage(index);
     this._onPageChangedListeners.forEach((func) => func(index));
+  }
+
+  _animateToPage(int index, {Curve? curve}) {
+    _pageViewController!.animateToPage(
+      index,
+      duration: duration,
+      //curve: Curves.fastOutSlowIn,
+      curve: curve == null ? Curves.fastOutSlowIn : curve,
+    );
   }
 
   selectBottomTab(int index) {
@@ -94,6 +118,7 @@ class SmartPageController extends InheritedWidget {
     pageHistory = [0];
     pageHistoryTabSelected = [0];
     currentBottomIndex = 0;
+    _currentPageIndex = 0;
     if (resetListeners == null || resetListeners == true) {
       _onBackPageListeners = [];
       _onInsertPageListeners = [];
@@ -101,13 +126,26 @@ class SmartPageController extends InheritedWidget {
     }
   }
 
-  bool back() {
-    if (pages.length > initialPages.length) {
-      pages.removeAt(pages.length - 1);
-    }
+  int get currentPageIndex => _currentPageIndex;
+
+  Future<bool> back() async {
+    var lastPage =
+        pageHistory.length >= 2 ? pageHistory[pageHistory.length - 1] : 0;
+    /*var pageOnBack =
+        pageHistory.length >= 2 ? pageHistory[pageHistory.length - 2] : 0;
+    _pageViewController!.animateToPage(
+      pageOnBack,
+      duration: Duration(milliseconds: 250),
+      curve: Curves.easeInToLinear,
+    );
+    if (pages.length > initialPages.length && lastPage > 0) {
+      await Future.delayed(Duration(milliseconds: 250), () {
+        pages.removeAt(lastPage);
+      });
+      _currentPageIndex--;
+    }*/
 
     if (_pageViewController!.page! > 0) {
-      var lastPage = pageHistory[pageHistory.length - 1];
       if (pageHistory.length >= 2) {
         lastPage = pageHistory[pageHistory.length - 2];
         pageHistory.removeAt(pageHistory.length - 1);

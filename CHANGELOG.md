@@ -10,3 +10,5 @@
 
 * Readme update with SmartPageBottomNavigationOptions options.
 * Fixed icon title display.
+
+## 1.0.4

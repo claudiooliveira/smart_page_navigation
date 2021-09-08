@@ -12,7 +12,7 @@ Created by Claudio Oliveira (https://twitter.com/cldlvr)
 
 ```yaml
 dependencies:
-  smart_page_navigation: ^1.0.0 #latest version
+  smart_page_navigation: ^1.0.4 #latest version
 ```
 
 ### Easy to use
@@ -101,11 +101,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
 ### SmartPageBottomNavigationOptions
 
-`height`: (double) Widget height
-`showIndicator`: (bool) Show/hide top indicator of selected option
-`indicatorColor`: (Color) Top indicator color
-`backgroundColor`: (Color) Widget background color
-`showBorder`: (bool) Show/hide border
-`borderColor`: (Color) Border color
-`selectedColor`: (Color) Icon and text color when option is selected
+`height`: (double) Widget height\
+`showIndicator`: (bool) Show/hide top indicator of selected option\
+`indicatorColor`: (Color) Top indicator color\
+`backgroundColor`: (Color) Widget background color\
+`showBorder`: (bool) Show/hide border\
+`borderColor`: (Color) Border color\
+`selectedColor`: (Color) Icon and text color when option is selected\
 `unselectedColor`: (Color) Icon and text color when the option is not selected
