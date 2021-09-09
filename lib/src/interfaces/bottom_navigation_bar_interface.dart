@@ -9,6 +9,7 @@ class SmartPageBottomNavigationOptions {
   Color? borderColor = Color(0xff707070).withOpacity(0.20);
   Color? selectedColor = Colors.blueAccent;
   Color? unselectedColor = Colors.grey;
+  Duration? slideDownDuration;
   SmartPageBottomNavigationOptions({
     this.height,
     this.showIndicator,
@@ -18,5 +19,6 @@ class SmartPageBottomNavigationOptions {
     this.indicatorColor,
     this.borderColor,
     this.backgroundColor,
+    this.slideDownDuration,
   });
 }

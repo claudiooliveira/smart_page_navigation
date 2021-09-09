@@ -71,7 +71,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               badgeColor: Colors.redAccent,
             ),
-            BottomIcon(icon: Icons.settings, title: "Config."),
+            BottomIcon(
+              icon: Icons.settings,
+              title: "Config.",
+              //hideBottomNavigationBar: true,
+            ),
           ],
           onTap: (int index) {
             print("Clicked at index $index");

@@ -24,20 +24,14 @@ class _SmartPageBottomNavigationBarState
     extends State<SmartPageBottomNavigationBar> {
   late SmartPageBottomNavigationOptions options;
 
+  bool bottomNavigationBarIsHidden = false;
+  Duration animDuration = Duration(milliseconds: 150);
+
   @override
   void initState() {
     super.initState();
-    options = widget.options ??
-        SmartPageBottomNavigationOptions(
-          height: 50,
-          showBorder: true,
-          showIndicator: true,
-          backgroundColor: Colors.white,
-          borderColor: Color(0xff707070).withOpacity(0.20),
-          indicatorColor: Colors.blueAccent,
-          selectedColor: Colors.blueAccent,
-          unselectedColor: Colors.grey,
-        );
+
+    defineOptions();
 
     if (options.showBorder == null) options.showBorder = true;
     if (options.showIndicator == null) options.showIndicator = true;
@@ -50,155 +44,272 @@ class _SmartPageBottomNavigationBarState
     if (options.indicatorColor == null)
       options.indicatorColor = Colors.blueAccent;
     if (options.height == null) options.height = 50;
+    if (options.slideDownDuration == null)
+      options.slideDownDuration = Duration(milliseconds: 150);
 
-    widget.controller.addOnBackPageListener(() => setState(() {}));
+    widget.controller.addOnBackPageListener(() {
+      BottomIcon bottomIcon =
+          widget.children[widget.controller.currentBottomIndex];
+      if (bottomIcon.hideBottomNavigationBar == true) {
+        widget.controller.hideBottomNavigationBar();
+      } else if (widget.controller.bottomNavigationBarIsHidden) {
+        widget.controller.showBottomNavigationBar();
+      }
+      setState(() {});
+    });
     widget.controller.addOnInsertPageListener((page) => setState(() {}));
     widget.controller.addOnPageChangedListener((index) => setState(() {}));
+    widget.controller.addOnBottomNavigationBarChanged(() async {
+      if (!bottomNavigationBarIsHidden) {
+        await Future.delayed(animDuration, () {});
+      }
+      bottomNavigationBarIsHidden =
+          widget.controller.bottomNavigationBarIsHidden;
+      setState(() {});
+    });
+  }
+
+  void defineOptions() {
+    options = widget.options ??
+        SmartPageBottomNavigationOptions(
+          height: 50,
+          showBorder: true,
+          showIndicator: true,
+          backgroundColor: Colors.white,
+          borderColor: Color(0xff707070).withOpacity(0.20),
+          indicatorColor: Colors.blueAccent,
+          selectedColor: Colors.blueAccent,
+          unselectedColor: Colors.grey,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
+    defineOptions();
     return LayoutBuilder(builder: (context, constraints) {
       final borderWidth = (constraints.maxWidth / widget.children.length);
-      return Container(
-        height: options.height,
-        decoration: BoxDecoration(
-          color: options.backgroundColor,
-          border: options.showBorder!
-              ? Border(
-                  top: BorderSide(
-                    color: options.borderColor!,
-                    width: 1,
-                  ),
-                )
-              : null,
-        ),
-        child: Stack(
-          children: [
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: widget.children.map((bottomIcon) {
-                  var currentIndex = widget.children.indexOf(bottomIcon);
-                  bool isSelected =
-                      widget.controller.currentBottomIndex == currentIndex;
-                  Color color = isSelected
-                      ? options.selectedColor!
-                      : options.unselectedColor!;
-                  if (bottomIcon.badgeColor == null) {
-                    bottomIcon.badgeColor = widget.options!.indicatorColor!;
-                  }
-                  return InkWell(
-                    onTap: () {
-                      StatefulWidget pageToRedirect =
-                          widget.controller.initialPages[currentIndex];
-                      if (widget.controller.pages.length >
-                          widget.controller.initialPages.length) {
-                        widget.controller
-                            .insertPage(pageToRedirect, ignoreTabHistory: true);
-                        widget.controller.selectBottomTab(currentIndex);
-                      } else {
-                        widget.controller.goToPage(currentIndex, false);
-                      }
-                      if (widget.onTap != null) {
-                        widget.onTap!(currentIndex);
-                      }
-                      setState(() {});
-                    },
-                    child: Container(
-                      width: borderWidth,
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: bottomIcon.icon != null
-                          ? LayoutBuilder(
-                              builder: (context, stackConstraints) {
-                                return Stack(
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        Icon(
-                                          bottomIcon.icon,
-                                          color: color,
-                                        ),
-                                        Visibility(
-                                          visible: bottomIcon.title != null,
-                                          child: Container(
-                                            margin: const EdgeInsets.symmetric(
-                                                vertical: 2),
-                                            child: Text(
-                                              bottomIcon.title == null
-                                                  ? ""
-                                                  : bottomIcon.title!,
-                                              textAlign: TextAlign.center,
-                                              style: bottomIcon.textStyle !=
-                                                      null
-                                                  ? bottomIcon.textStyle!
-                                                      .copyWith(color: color)
-                                                  : TextStyle(
-                                                      color: color,
-                                                      fontSize: 12,
-                                                      fontWeight: isSelected
-                                                          ? FontWeight.bold
-                                                          : FontWeight.normal,
-                                                    ),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    if (bottomIcon.badge != null)
-                                      Positioned(
-                                        right: (stackConstraints.maxWidth / 2) -
-                                            32,
-                                        top: 6,
-                                        child: SizedBox(
-                                          width: 16,
-                                          height: 16,
-                                          child: Container(
-                                            width: 16,
-                                            height: 16,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(100),
-                                              color: bottomIcon.badgeColor,
-                                            ),
-                                            child: Center(
-                                                child: bottomIcon.badge!),
-                                          ),
-                                        ),
-                                      )
-                                  ],
-                                );
-                              },
-                            )
-                          : isSelected
-                              ? bottomIcon.selectedWidget
-                              : bottomIcon.unselectedWidget,
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-            Visibility(
-              visible: widget.options?.showIndicator == true,
-              child: AnimatedPositioned(
-                top: 0,
-                left: borderWidth * widget.controller.currentBottomIndex,
+      return Visibility(
+        visible: !bottomNavigationBarIsHidden,
+        child: Container(
+          width: constraints.maxWidth,
+          height: options.height,
+          child: Stack(
+            children: [
+              AnimatedPositioned(
+                duration: Duration(milliseconds: 150),
+                width: constraints.maxWidth,
+                height: widget.controller.bottomNavigationBarIsHidden
+                    ? 0
+                    : options.height,
+                top: widget.controller.bottomNavigationBarIsHidden
+                    ? options.height
+                    : 0,
                 child: Container(
-                  width: borderWidth,
-                  height: 2,
-                  decoration: BoxDecoration(
-                    color: options.indicatorColor,
+                  width: constraints.maxWidth,
+                  height: options.height,
+                  child: Stack(
+                    children: [
+                      AnimatedPositioned(
+                        width: constraints.maxWidth,
+                        height: widget.controller.bottomNavigationBarIsHidden
+                            ? 0
+                            : options.height,
+                        top: widget.controller.bottomNavigationBarIsHidden
+                            ? options.height
+                            : 0,
+                        duration: Duration(milliseconds: 150),
+                        child: Container(
+                          height: options.height,
+                          decoration: BoxDecoration(
+                            color: options.backgroundColor,
+                            border: options.showBorder!
+                                ? Border(
+                                    top: BorderSide(
+                                      color: options.borderColor!,
+                                      width: 1,
+                                    ),
+                                  )
+                                : null,
+                          ),
+                          child: Stack(
+                            children: [
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: widget.children.map((bottomIcon) {
+                                    var currentIndex =
+                                        widget.children.indexOf(bottomIcon);
+                                    bool isSelected =
+                                        widget.controller.currentBottomIndex ==
+                                            currentIndex;
+                                    Color color = isSelected
+                                        ? options.selectedColor!
+                                        : options.unselectedColor!;
+                                    if (bottomIcon.badgeColor == null) {
+                                      bottomIcon.badgeColor =
+                                          widget.options!.indicatorColor!;
+                                    }
+                                    return InkWell(
+                                      onTap: () {
+                                        StatefulWidget pageToRedirect = widget
+                                            .controller
+                                            .initialPages[currentIndex];
+                                        if (widget.controller.pages.length >
+                                            widget.controller.initialPages
+                                                .length) {
+                                          widget.controller.insertPage(
+                                            pageToRedirect,
+                                            ignoreTabHistory: true,
+                                            hideBottomNavigationBar: bottomIcon
+                                                    .hideBottomNavigationBar ==
+                                                true,
+                                          );
+                                          widget.controller
+                                              .selectBottomTab(currentIndex);
+                                        } else {
+                                          widget.controller.goToPage(
+                                            currentIndex,
+                                            animated: false,
+                                            hideBottomNavigationBar: bottomIcon
+                                                    .hideBottomNavigationBar ==
+                                                true,
+                                          );
+                                        }
+                                        if (widget.onTap != null) {
+                                          widget.onTap!(currentIndex);
+                                        }
+                                        setState(() {});
+                                      },
+                                      child: Container(
+                                        width: borderWidth,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 12),
+                                        child: bottomIcon.icon != null
+                                            ? LayoutBuilder(
+                                                builder: (context,
+                                                    stackConstraints) {
+                                                  return Stack(
+                                                    children: [
+                                                      Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .stretch,
+                                                        children: [
+                                                          Icon(
+                                                            bottomIcon.icon,
+                                                            color: color,
+                                                          ),
+                                                          Visibility(
+                                                            visible: bottomIcon
+                                                                    .title !=
+                                                                null,
+                                                            child: Container(
+                                                              margin: const EdgeInsets
+                                                                      .symmetric(
+                                                                  vertical: 2),
+                                                              child: Text(
+                                                                bottomIcon.title ==
+                                                                        null
+                                                                    ? ""
+                                                                    : bottomIcon
+                                                                        .title!,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: bottomIcon
+                                                                            .textStyle !=
+                                                                        null
+                                                                    ? bottomIcon
+                                                                        .textStyle!
+                                                                        .copyWith(
+                                                                            color:
+                                                                                color)
+                                                                    : TextStyle(
+                                                                        color:
+                                                                            color,
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight: isSelected
+                                                                            ? FontWeight.bold
+                                                                            : FontWeight.normal,
+                                                                      ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      if (bottomIcon.badge !=
+                                                          null)
+                                                        Positioned(
+                                                          right: (stackConstraints
+                                                                      .maxWidth /
+                                                                  2) -
+                                                              32,
+                                                          top: 6,
+                                                          child: SizedBox(
+                                                            width: 16,
+                                                            height: 16,
+                                                            child: Container(
+                                                              width: 16,
+                                                              height: 16,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            100),
+                                                                color: bottomIcon
+                                                                    .badgeColor,
+                                                              ),
+                                                              child: Center(
+                                                                  child: bottomIcon
+                                                                      .badge!),
+                                                            ),
+                                                          ),
+                                                        )
+                                                    ],
+                                                  );
+                                                },
+                                              )
+                                            : isSelected
+                                                ? bottomIcon.selectedWidget
+                                                : bottomIcon.unselectedWidget,
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                              Visibility(
+                                visible: widget.options?.showIndicator == true,
+                                child: AnimatedPositioned(
+                                  top: 0,
+                                  left: borderWidth *
+                                      widget.controller.currentBottomIndex,
+                                  child: Container(
+                                    width: borderWidth,
+                                    height: 2,
+                                    decoration: BoxDecoration(
+                                      color: options.indicatorColor,
+                                    ),
+                                  ),
+                                  duration: Duration(milliseconds: 300),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                duration: Duration(milliseconds: 300),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     });
@@ -213,6 +324,7 @@ class BottomIcon {
   TextStyle? textStyle;
   Widget? badge;
   Color? badgeColor;
+  bool? hideBottomNavigationBar;
   BottomIcon({
     this.selectedWidget,
     this.unselectedWidget,
@@ -220,6 +332,7 @@ class BottomIcon {
     this.title,
     this.badge,
     this.badgeColor,
+    this.hideBottomNavigationBar,
   });
 }
 

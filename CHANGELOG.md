@@ -15,3 +15,7 @@
 
 * Small fixes
 * Badge support
+
+## 1.0.5
+
+* Hide the bottom navigation bar feature
