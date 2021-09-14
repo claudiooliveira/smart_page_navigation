@@ -70,7 +70,8 @@ class SmartPageController extends InheritedWidget {
     if (goToNewPage == null) {
       goToNewPage = true;
     }
-    this.pages.add(newPage);
+    //this.pages.add(newPage);
+    this.pages.insert(_currentPageIndex + 1, newPage);
 
     if (hideBottomNavigationBar != null) {
       if (hideBottomNavigationBar == true) {

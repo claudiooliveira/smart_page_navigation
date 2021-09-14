@@ -19,3 +19,7 @@
 ## 1.0.5
 
 * Hide the bottom navigation bar feature
+
+## 1.0.6
+
+* Quick fix in navigation issue
