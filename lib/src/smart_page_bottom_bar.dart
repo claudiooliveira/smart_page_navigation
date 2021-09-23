@@ -6,7 +6,7 @@ class SmartPageBottomNavigationBar extends StatefulWidget {
   SmartPageController controller;
   SmartPageBottomNavigationOptions? options;
   List<BottomIcon> children;
-  Function(int index)? onTap;
+  bool Function(int index)? onTap;
   SmartPageBottomNavigationBar({
     Key? key,
     required this.controller,
@@ -70,17 +70,18 @@ class _SmartPageBottomNavigationBarState
   }
 
   void defineOptions() {
-    options = widget.options ??
-        SmartPageBottomNavigationOptions(
-          height: 50,
-          showBorder: true,
-          showIndicator: true,
-          backgroundColor: Colors.white,
-          borderColor: Color(0xff707070).withOpacity(0.20),
-          indicatorColor: Colors.blueAccent,
-          selectedColor: Colors.blueAccent,
-          unselectedColor: Colors.grey,
-        );
+    options = widget.options != null
+        ? widget.options!
+        : SmartPageBottomNavigationOptions(
+            height: 50,
+            showBorder: true,
+            showIndicator: true,
+            backgroundColor: Colors.white,
+            borderColor: Color(0xff707070).withOpacity(0.20),
+            indicatorColor: Colors.blueAccent,
+            selectedColor: Colors.blueAccent,
+            unselectedColor: Colors.grey,
+          );
   }
 
   @override
@@ -153,32 +154,36 @@ class _SmartPageBottomNavigationBarState
                                     }
                                     return InkWell(
                                       onTap: () {
-                                        StatefulWidget pageToRedirect = widget
-                                            .controller
-                                            .initialPages[currentIndex];
-                                        if (widget.controller.pages.length >
-                                            widget.controller.initialPages
-                                                .length) {
-                                          widget.controller.insertPage(
-                                            pageToRedirect,
-                                            ignoreTabHistory: true,
-                                            hideBottomNavigationBar: bottomIcon
-                                                    .hideBottomNavigationBar ==
-                                                true,
-                                          );
-                                          widget.controller
-                                              .selectBottomTab(currentIndex);
-                                        } else {
-                                          widget.controller.goToPage(
-                                            currentIndex,
-                                            animated: false,
-                                            hideBottomNavigationBar: bottomIcon
-                                                    .hideBottomNavigationBar ==
-                                                true,
-                                          );
-                                        }
+                                        bool enabledToGoPage = true;
                                         if (widget.onTap != null) {
-                                          widget.onTap!(currentIndex);
+                                          enabledToGoPage =
+                                              widget.onTap!(currentIndex);
+                                        }
+                                        if (enabledToGoPage) {
+                                          StatefulWidget pageToRedirect = widget
+                                              .controller
+                                              .initialPages[currentIndex];
+                                          if (widget.controller.pages.length >
+                                              widget.controller.initialPages
+                                                  .length) {
+                                            widget.controller.insertPage(
+                                              pageToRedirect,
+                                              ignoreTabHistory: true,
+                                              hideBottomNavigationBar: bottomIcon
+                                                      .hideBottomNavigationBar ==
+                                                  true,
+                                            );
+                                            widget.controller
+                                                .selectBottomTab(currentIndex);
+                                          } else {
+                                            widget.controller.goToPage(
+                                              currentIndex,
+                                              animated: false,
+                                              hideBottomNavigationBar: bottomIcon
+                                                      .hideBottomNavigationBar ==
+                                                  true,
+                                            );
+                                          }
                                         }
                                         setState(() {});
                                       },

@@ -23,3 +23,7 @@
 ## 1.0.6
 
 * Quick fix in navigation issue
+
+## 1.0.7
+
+* Return bool in the onTap method on SmartPageBottomNavigationBar to identify if the page is accessible.

@@ -12,7 +12,7 @@ Created by Claudio Oliveira (https://twitter.com/cldlvr)
 
 ```yaml
 dependencies:
-  smart_page_navigation: ^1.0.6 #latest version
+  smart_page_navigation: ^1.0.7 #latest version
 ```
 
 ### Easy to use

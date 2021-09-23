@@ -79,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           onTap: (int index) {
             print("Clicked at index $index");
+            return true;
           },
         ),
       ),

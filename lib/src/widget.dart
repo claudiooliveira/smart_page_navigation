@@ -28,6 +28,12 @@ class _SmartPageNavigationState extends State<SmartPageNavigation> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    widget.controller.getPageViewController().dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PageView.builder(
       pageSnapping: false,
