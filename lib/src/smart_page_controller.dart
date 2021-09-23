@@ -143,7 +143,7 @@ class SmartPageController extends InheritedWidget {
     this.pageHistoryTabSelected.add(index);
   }
 
-  getPageViewController() {
+  PageController? getPageViewController() {
     return this._pageViewController;
   }
 
@@ -159,6 +159,13 @@ class SmartPageController extends InheritedWidget {
       _onInsertPageListeners = [];
       _onPageChangedListeners = [];
     }
+  }
+
+  resetPageController() {
+    this._pageViewController = PageController(
+      initialPage: this.initialPage!,
+      keepPage: this.keepPage!,
+    );
   }
 
   showBottomNavigationBar() {

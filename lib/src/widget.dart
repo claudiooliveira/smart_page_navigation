@@ -29,8 +29,8 @@ class _SmartPageNavigationState extends State<SmartPageNavigation> {
 
   @override
   void dispose() {
+    widget.controller.getPageViewController()?.dispose();
     super.dispose();
-    widget.controller.getPageViewController().dispose();
   }
 
   @override

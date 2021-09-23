@@ -27,3 +27,7 @@
 ## 1.0.7
 
 * Return bool in the onTap method on SmartPageBottomNavigationBar to identify if the page is accessible.
+
+## 1.0.8
+
+* Added resetPageController
