@@ -18,8 +18,9 @@ class SmartPageController extends InheritedWidget {
   List<Function> _onBackPageListeners = [];
   List<Function(StatefulWidget page)> _onInsertPageListeners = [];
   List<Function(int page)> _onPageChangedListeners = [];
-  List<Function> _onBottomNavigationBarChanged = [];
-  List<Function(int index)> _onBottomOptionSelected = [];
+  List<Function(int index)> _onBottomNavigationBarChanged = [];
+  List<Function(int index, BuildContext context)> _onBottomOptionSelected = [];
+  List<Function> _onResetNavigation = [];
 
   SmartPageController({required Widget child, Key? key})
       : super(key: key, child: child);
@@ -50,12 +51,15 @@ class SmartPageController extends InheritedWidget {
     this._onBackPageListeners.add(listener);
   }
 
-  addOnBottomNavigationBarChanged(Function listener) {
+  addOnBottomNavigationBarChanged(Function(int index) listener) {
     this._onBottomNavigationBarChanged.add(listener);
   }
 
-  addOnBottomOptionSelected(Function(int index) listener) {
-    this._onBottomOptionSelected.add(listener);
+  addOnBottomOptionSelected(
+      Function(int index, BuildContext context) listener) {
+    if (this._onBottomOptionSelected.length == 0) {
+      this._onBottomOptionSelected = [listener];
+    }
   }
 
   addOnInsertPageListener(Function(StatefulWidget page) listener) {
@@ -64,6 +68,10 @@ class SmartPageController extends InheritedWidget {
 
   addOnPageChangedListener(Function(int index) listener) {
     this._onPageChangedListeners.add(listener);
+  }
+
+  addOnResetNavigation(Function listener) {
+    this._onResetNavigation.add(listener);
   }
 
   insertPage(
@@ -93,11 +101,14 @@ class SmartPageController extends InheritedWidget {
           : 0);
     }
     this._onInsertPageListeners.forEach((func) => func(newPage));
-    this._onBottomNavigationBarChanged.forEach((func) => func());
     if (goToNewPage) {
       goToPage(_currentPageIndex + 1,
           animated: ignoreTabHistory == false,
           dontUpdateHistoryTabSelected: true);
+    } else {
+      this
+          ._onBottomNavigationBarChanged
+          .forEach((func) => func(this.currentBottomIndex));
     }
   }
 
@@ -116,6 +127,7 @@ class SmartPageController extends InheritedWidget {
         (dontUpdateHistoryTabSelected == null ||
             dontUpdateHistoryTabSelected == false)) {
       this.currentBottomIndex = index;
+      print(">>> 2 currentBottomIndex $currentBottomIndex");
     }
     pageHistory.add(index);
     if (hideBottomNavigationBar != null) {
@@ -130,8 +142,11 @@ class SmartPageController extends InheritedWidget {
     } else {
       _pageViewController!.jumpToPage(index);
     }*/
+    print(">>>>currentBottomIndex $currentBottomIndex");
     _pageViewController!.jumpToPage(index);
-    this._onBottomNavigationBarChanged.forEach((func) => func());
+    this
+        ._onBottomNavigationBarChanged
+        .forEach((func) => func(this.currentBottomIndex));
     this._onPageChangedListeners.forEach((func) => func(index));
   }
 
@@ -144,8 +159,9 @@ class SmartPageController extends InheritedWidget {
     );
   }
 
-  selectBottomTab(int index) {
-    this._onBottomOptionSelected.forEach((func) => func(index));
+  selectBottomTab(int index, BuildContext context) {
+    this._onBottomNavigationBarChanged.forEach((func) => func(index));
+    this._onBottomOptionSelected.forEach((func) => func(index, context));
     if (pages.length > initialPages.length) {
       this.currentBottomIndex = index;
       this.pageHistoryTabSelected.add(index);
@@ -156,18 +172,22 @@ class SmartPageController extends InheritedWidget {
     return this._pageViewController;
   }
 
-  resetNavigation({bool? resetListeners = true}) {
+  resetNavigation({bool? resetListeners = false}) {
     pages.clear();
     pages.addAll(this.initialPages);
     pageHistory = [0];
     pageHistoryTabSelected = [0];
     currentBottomIndex = 0;
     _currentPageIndex = 0;
-    if (resetListeners == null || resetListeners == true) {
+    if (resetListeners == true) {
       _onBackPageListeners = [];
       _onInsertPageListeners = [];
       _onPageChangedListeners = [];
+      //_onBottomOptionSelected = []; //this listener could not be empty
+      _onBottomNavigationBarChanged = [];
+      _onResetNavigation = [];
     }
+    this._onResetNavigation.forEach((func) => func());
   }
 
   resetPageController() {
@@ -179,12 +199,16 @@ class SmartPageController extends InheritedWidget {
 
   showBottomNavigationBar() {
     this._hideBottomNavigationBar = false;
-    this._onBottomNavigationBarChanged.forEach((func) => func());
+    this
+        ._onBottomNavigationBarChanged
+        .forEach((func) => func(this.currentBottomIndex));
   }
 
   hideBottomNavigationBar() {
     this._hideBottomNavigationBar = true;
-    this._onBottomNavigationBarChanged.forEach((func) => func());
+    this
+        ._onBottomNavigationBarChanged
+        .forEach((func) => func(this.currentBottomIndex));
   }
 
   int get currentPageIndex => _currentPageIndex;
@@ -225,6 +249,8 @@ class SmartPageController extends InheritedWidget {
         currentBottomIndex =
             pageHistoryTabSelected[pageHistoryTabSelected.length - 1];
       }
+
+      print(">>> 1 currentBottomIndex $currentBottomIndex");
 
       _currentPageIndex = lastPage;
 

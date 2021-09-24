@@ -6,7 +6,7 @@ class SmartPageBottomNavigationBar extends StatefulWidget {
   SmartPageController controller;
   SmartPageBottomNavigationOptions? options;
   List<BottomIcon> children;
-  bool Function(int index)? onTap;
+  bool Function(int index, BuildContext context)? onTap;
   SmartPageBottomNavigationBar({
     Key? key,
     required this.controller,
@@ -26,6 +26,7 @@ class _SmartPageBottomNavigationBarState
 
   bool bottomNavigationBarIsHidden = false;
   Duration animDuration = Duration(milliseconds: 150);
+  int currentBottomIndex = 0;
 
   @override
   void initState() {
@@ -47,7 +48,17 @@ class _SmartPageBottomNavigationBarState
     if (options.slideDownDuration == null)
       options.slideDownDuration = Duration(milliseconds: 150);
 
+    widgetListeners();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  widgetListeners() {
     widget.controller.addOnBackPageListener(() {
+      currentBottomIndex = widget.controller.currentBottomIndex;
       BottomIcon bottomIcon =
           widget.children[widget.controller.currentBottomIndex];
       if (bottomIcon.hideBottomNavigationBar == true) {
@@ -63,7 +74,10 @@ class _SmartPageBottomNavigationBarState
     widget.controller.addOnPageChangedListener((index) {
       if (mounted) setState(() {});
     });
-    widget.controller.addOnBottomNavigationBarChanged(() async {
+    widget.controller.addOnResetNavigation(() {
+      if (mounted) setState(() {});
+    });
+    widget.controller.addOnBottomNavigationBarChanged((int index) async {
       if (!bottomNavigationBarIsHidden) {
         await Future.delayed(animDuration, () {});
       }
@@ -71,11 +85,11 @@ class _SmartPageBottomNavigationBarState
           widget.controller.bottomNavigationBarIsHidden;
       if (mounted) setState(() {});
     });
-    widget.controller.addOnBottomOptionSelected((currentIndex) {
+    widget.controller.addOnBottomOptionSelected((currentIndex, context) {
       var bottomIcon = widget.children[currentIndex];
       bool enabledToGoPage = true;
       if (widget.onTap != null) {
-        enabledToGoPage = widget.onTap!(currentIndex);
+        enabledToGoPage = widget.onTap!(currentIndex, context);
       }
       if (enabledToGoPage) {
         StatefulWidget pageToRedirect =
@@ -94,8 +108,10 @@ class _SmartPageBottomNavigationBarState
             hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
           );
         }
+        currentBottomIndex =
+            widget.controller.currentBottomIndex = currentIndex;
+        if (mounted) setState(() {});
       }
-      if (mounted) setState(() {});
     });
   }
 
@@ -173,8 +189,7 @@ class _SmartPageBottomNavigationBarState
                                     var currentIndex =
                                         widget.children.indexOf(bottomIcon);
                                     bool isSelected =
-                                        widget.controller.currentBottomIndex ==
-                                            currentIndex;
+                                        currentBottomIndex == currentIndex;
                                     Color color = isSelected
                                         ? options.selectedColor!
                                         : options.unselectedColor!;
@@ -184,8 +199,8 @@ class _SmartPageBottomNavigationBarState
                                     }
                                     return InkWell(
                                       onTap: () {
-                                        widget.controller
-                                            .selectBottomTab(currentIndex);
+                                        widget.controller.selectBottomTab(
+                                            currentIndex, context);
                                         setState(() {});
                                       },
                                       child: Container(
@@ -294,8 +309,7 @@ class _SmartPageBottomNavigationBarState
                                 visible: widget.options?.showIndicator == true,
                                 child: AnimatedPositioned(
                                   top: 0,
-                                  left: borderWidth *
-                                      widget.controller.currentBottomIndex,
+                                  left: borderWidth * currentBottomIndex,
                                   child: Container(
                                     width: borderWidth,
                                     height: 2,

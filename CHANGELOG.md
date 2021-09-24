@@ -47,3 +47,7 @@
 ## 1.0.12
 
 * Fix navigation issue
+
+## 1.0.13
+
+* Fix navigation issue

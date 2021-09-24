@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
               //hideBottomNavigationBar: true,
             ),
           ],
-          onTap: (int index) {
+          onTap: (int index, BuildContext context) {
             print("Clicked at index $index");
             return true;
           },
@@ -161,7 +161,7 @@ class _PageBState extends State<PageB> {
             SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
-                controller.selectBottomTab(2);
+                controller.selectBottomTab(2, context);
               },
               child: Text("Go To Config"),
             ),
