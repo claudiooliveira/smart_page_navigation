@@ -55,17 +55,21 @@ class _SmartPageBottomNavigationBarState
       } else if (widget.controller.bottomNavigationBarIsHidden) {
         widget.controller.showBottomNavigationBar();
       }
-      setState(() {});
+      if (mounted) setState(() {});
     });
-    widget.controller.addOnInsertPageListener((page) => setState(() {}));
-    widget.controller.addOnPageChangedListener((index) => setState(() {}));
+    widget.controller.addOnInsertPageListener((page) {
+      if (mounted) setState(() {});
+    });
+    widget.controller.addOnPageChangedListener((index) {
+      if (mounted) setState(() {});
+    });
     widget.controller.addOnBottomNavigationBarChanged(() async {
       if (!bottomNavigationBarIsHidden) {
         await Future.delayed(animDuration, () {});
       }
       bottomNavigationBarIsHidden =
           widget.controller.bottomNavigationBarIsHidden;
-      setState(() {});
+      if (mounted) setState(() {});
     });
     widget.controller.addOnBottomOptionSelected((currentIndex) {
       var bottomIcon = widget.children[currentIndex];
@@ -91,7 +95,7 @@ class _SmartPageBottomNavigationBarState
           );
         }
       }
-      setState(() {});
+      if (mounted) setState(() {});
     });
   }
 

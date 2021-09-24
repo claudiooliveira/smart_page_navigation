@@ -88,8 +88,9 @@ class SmartPageController extends InheritedWidget {
 
     //this.pages.insert(_currentPageIndex + 1, newPage);
     if (ignoreTabHistory == null || ignoreTabHistory == false) {
-      pageHistoryTabSelected
-          .add(pageHistoryTabSelected[pageHistoryTabSelected.length - 1]);
+      pageHistoryTabSelected.add(pageHistoryTabSelected.length > 0
+          ? pageHistoryTabSelected[pageHistoryTabSelected.length - 1]
+          : 0);
     }
     this._onInsertPageListeners.forEach((func) => func(newPage));
     this._onBottomNavigationBarChanged.forEach((func) => func());
@@ -193,7 +194,7 @@ class SmartPageController extends InheritedWidget {
     var lastPage =
         pageHistory.length >= 2 ? pageHistory[pageHistory.length - 1] : 0;
     if (pages.length > initialPages.length && lastPage > 0) {
-      if (pages.length - 1 > lastPage) {
+      if (pages.length > lastPage) {
         pages.removeAt(_currentPageIndex);
         _currentPageIndex--;
       }
@@ -224,6 +225,8 @@ class SmartPageController extends InheritedWidget {
         currentBottomIndex =
             pageHistoryTabSelected[pageHistoryTabSelected.length - 1];
       }
+
+      _currentPageIndex = lastPage;
 
       _pageViewController!.jumpToPage(
         lastPage,
