@@ -35,3 +35,7 @@
 ## 1.0.9
 
 * Fix so that the "selectBottomTab" method actually selects the expected bottom button and redirects to the page correctly.
+
+## 1.0.10
+
+* Fix in the stack of pages that did not remove the page when rewinding.

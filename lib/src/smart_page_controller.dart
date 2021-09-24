@@ -192,11 +192,13 @@ class SmartPageController extends InheritedWidget {
   Future<bool> back() async {
     var lastPage =
         pageHistory.length >= 2 ? pageHistory[pageHistory.length - 1] : 0;
-    /*
-    
-    // This is commented out because the animation implementation is not complete yet.
-
-    var pageOnBack =
+    if (pages.length > initialPages.length && lastPage > 0) {
+      if (pages.length - 1 > lastPage) {
+        pages.removeAt(lastPage + 1);
+        _currentPageIndex--;
+      }
+    }
+    /*var pageOnBack =
         pageHistory.length >= 2 ? pageHistory[pageHistory.length - 2] : 0;
     _pageViewController!.animateToPage(
       pageOnBack,
