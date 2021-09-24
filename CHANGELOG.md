@@ -31,3 +31,7 @@
 ## 1.0.8
 
 * Added resetPageController
+
+## 1.0.9
+
+* Fix so that the "selectBottomTab" method actually selects the expected bottom button and redirects to the page correctly.

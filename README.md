@@ -12,7 +12,7 @@ Created by Claudio Oliveira (https://twitter.com/cldlvr)
 
 ```yaml
 dependencies:
-  smart_page_navigation: ^1.0.8 #latest version
+  smart_page_navigation: ^1.0.9 #latest version
 ```
 
 ### Easy to use
@@ -79,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           onTap: (int index) {
             print("Clicked at index $index");
+            return true;
           },
         ),
       ),

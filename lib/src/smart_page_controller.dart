@@ -19,6 +19,7 @@ class SmartPageController extends InheritedWidget {
   List<Function(StatefulWidget page)> _onInsertPageListeners = [];
   List<Function(int page)> _onPageChangedListeners = [];
   List<Function> _onBottomNavigationBarChanged = [];
+  List<Function(int index)> _onBottomOptionSelected = [];
 
   SmartPageController({required Widget child, Key? key})
       : super(key: key, child: child);
@@ -51,6 +52,10 @@ class SmartPageController extends InheritedWidget {
 
   addOnBottomNavigationBarChanged(Function listener) {
     this._onBottomNavigationBarChanged.add(listener);
+  }
+
+  addOnBottomOptionSelected(Function(int index) listener) {
+    this._onBottomOptionSelected.add(listener);
   }
 
   addOnInsertPageListener(Function(StatefulWidget page) listener) {
@@ -139,8 +144,11 @@ class SmartPageController extends InheritedWidget {
   }
 
   selectBottomTab(int index) {
-    this.currentBottomIndex = index;
-    this.pageHistoryTabSelected.add(index);
+    this._onBottomOptionSelected.forEach((func) => func(index));
+    if (pages.length > initialPages.length) {
+      this.currentBottomIndex = index;
+      this.pageHistoryTabSelected.add(index);
+    }
   }
 
   PageController? getPageViewController() {
@@ -184,7 +192,11 @@ class SmartPageController extends InheritedWidget {
   Future<bool> back() async {
     var lastPage =
         pageHistory.length >= 2 ? pageHistory[pageHistory.length - 1] : 0;
-    /*var pageOnBack =
+    /*
+    
+    // This is commented out because the animation implementation is not complete yet.
+
+    var pageOnBack =
         pageHistory.length >= 2 ? pageHistory[pageHistory.length - 2] : 0;
     _pageViewController!.animateToPage(
       pageOnBack,

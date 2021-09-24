@@ -67,6 +67,31 @@ class _SmartPageBottomNavigationBarState
           widget.controller.bottomNavigationBarIsHidden;
       setState(() {});
     });
+    widget.controller.addOnBottomOptionSelected((currentIndex) {
+      var bottomIcon = widget.children[currentIndex];
+      bool enabledToGoPage = true;
+      if (widget.onTap != null) {
+        enabledToGoPage = widget.onTap!(currentIndex);
+      }
+      if (enabledToGoPage) {
+        StatefulWidget pageToRedirect =
+            widget.controller.initialPages[currentIndex];
+        if (widget.controller.pages.length >
+            widget.controller.initialPages.length) {
+          widget.controller.insertPage(
+            pageToRedirect,
+            ignoreTabHistory: true,
+            hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
+          );
+        } else {
+          widget.controller.goToPage(
+            currentIndex,
+            animated: false,
+            hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
+          );
+        }
+      }
+    });
   }
 
   void defineOptions() {
@@ -154,37 +179,8 @@ class _SmartPageBottomNavigationBarState
                                     }
                                     return InkWell(
                                       onTap: () {
-                                        bool enabledToGoPage = true;
-                                        if (widget.onTap != null) {
-                                          enabledToGoPage =
-                                              widget.onTap!(currentIndex);
-                                        }
-                                        if (enabledToGoPage) {
-                                          StatefulWidget pageToRedirect = widget
-                                              .controller
-                                              .initialPages[currentIndex];
-                                          if (widget.controller.pages.length >
-                                              widget.controller.initialPages
-                                                  .length) {
-                                            widget.controller.insertPage(
-                                              pageToRedirect,
-                                              ignoreTabHistory: true,
-                                              hideBottomNavigationBar: bottomIcon
-                                                      .hideBottomNavigationBar ==
-                                                  true,
-                                            );
-                                            widget.controller
-                                                .selectBottomTab(currentIndex);
-                                          } else {
-                                            widget.controller.goToPage(
-                                              currentIndex,
-                                              animated: false,
-                                              hideBottomNavigationBar: bottomIcon
-                                                      .hideBottomNavigationBar ==
-                                                  true,
-                                            );
-                                          }
-                                        }
+                                        widget.controller
+                                            .selectBottomTab(currentIndex);
                                         setState(() {});
                                       },
                                       child: Container(
