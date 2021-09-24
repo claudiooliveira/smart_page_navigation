@@ -91,6 +91,7 @@ class _SmartPageBottomNavigationBarState
           );
         }
       }
+      setState(() {});
     });
   }
 

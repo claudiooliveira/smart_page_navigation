@@ -158,6 +158,13 @@ class _PageBState extends State<PageB> {
               },
               child: Text("Open External Page"),
             ),
+            SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () {
+                controller.selectBottomTab(2);
+              },
+              child: Text("Go To Config"),
+            ),
           ],
         ),
       ),

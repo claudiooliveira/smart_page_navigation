@@ -39,3 +39,7 @@
 ## 1.0.10
 
 * Fix in the stack of pages that did not remove the page when rewinding.
+
+## 1.0.11
+
+* Fix navigation issue

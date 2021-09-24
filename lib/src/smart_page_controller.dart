@@ -194,10 +194,11 @@ class SmartPageController extends InheritedWidget {
         pageHistory.length >= 2 ? pageHistory[pageHistory.length - 1] : 0;
     if (pages.length > initialPages.length && lastPage > 0) {
       if (pages.length - 1 > lastPage) {
-        pages.removeAt(lastPage + 1);
+        pages.removeAt(_currentPageIndex);
         _currentPageIndex--;
       }
     }
+
     /*var pageOnBack =
         pageHistory.length >= 2 ? pageHistory[pageHistory.length - 2] : 0;
     _pageViewController!.animateToPage(
