@@ -51,3 +51,7 @@
 ## 1.0.13
 
 * Fix navigation issue
+
+## 1.0.14
+
+* Fix bottom navigation bar

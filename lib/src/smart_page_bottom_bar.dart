@@ -92,6 +92,8 @@ class _SmartPageBottomNavigationBarState
         enabledToGoPage = widget.onTap!(currentIndex, context);
       }
       if (enabledToGoPage) {
+        currentBottomIndex =
+            widget.controller.currentBottomIndex = currentIndex;
         StatefulWidget pageToRedirect =
             widget.controller.initialPages[currentIndex];
         if (widget.controller.pages.length >
@@ -108,8 +110,7 @@ class _SmartPageBottomNavigationBarState
             hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
           );
         }
-        currentBottomIndex =
-            widget.controller.currentBottomIndex = currentIndex;
+        //widget.controller.pageHistoryTabSelected.add(currentBottomIndex);
         if (mounted) setState(() {});
       }
     });

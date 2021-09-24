@@ -127,7 +127,6 @@ class SmartPageController extends InheritedWidget {
         (dontUpdateHistoryTabSelected == null ||
             dontUpdateHistoryTabSelected == false)) {
       this.currentBottomIndex = index;
-      print(">>> 2 currentBottomIndex $currentBottomIndex");
     }
     pageHistory.add(index);
     if (hideBottomNavigationBar != null) {
@@ -142,7 +141,6 @@ class SmartPageController extends InheritedWidget {
     } else {
       _pageViewController!.jumpToPage(index);
     }*/
-    print(">>>>currentBottomIndex $currentBottomIndex");
     _pageViewController!.jumpToPage(index);
     this
         ._onBottomNavigationBarChanged
@@ -163,8 +161,8 @@ class SmartPageController extends InheritedWidget {
     this._onBottomNavigationBarChanged.forEach((func) => func(index));
     this._onBottomOptionSelected.forEach((func) => func(index, context));
     if (pages.length > initialPages.length) {
-      this.currentBottomIndex = index;
-      this.pageHistoryTabSelected.add(index);
+      //this.currentBottomIndex = index;
+      //this.pageHistoryTabSelected.add(index);
     }
   }
 
@@ -242,7 +240,9 @@ class SmartPageController extends InheritedWidget {
       if (pageHistory.length >= 2) {
         lastPage = pageHistory[pageHistory.length - 2];
         pageHistory.removeAt(pageHistory.length - 1);
-        pageHistoryTabSelected.removeAt(pageHistoryTabSelected.length - 1);
+        if (pageHistoryTabSelected.length > 0) {
+          pageHistoryTabSelected.removeAt(pageHistoryTabSelected.length - 1);
+        }
       }
 
       if (pageHistoryTabSelected.length >= 1) {
@@ -250,7 +250,9 @@ class SmartPageController extends InheritedWidget {
             pageHistoryTabSelected[pageHistoryTabSelected.length - 1];
       }
 
-      print(">>> 1 currentBottomIndex $currentBottomIndex");
+      if (pageHistoryTabSelected.length == 0) {
+        currentBottomIndex = 0;
+      }
 
       _currentPageIndex = lastPage;
 
