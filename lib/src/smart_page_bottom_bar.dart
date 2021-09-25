@@ -26,7 +26,6 @@ class _SmartPageBottomNavigationBarState
 
   bool bottomNavigationBarIsHidden = false;
   Duration animDuration = Duration(milliseconds: 150);
-  int currentBottomIndex = 0;
 
   @override
   void initState() {
@@ -48,17 +47,22 @@ class _SmartPageBottomNavigationBarState
     if (options.slideDownDuration == null)
       options.slideDownDuration = Duration(milliseconds: 150);
 
-    widgetListeners();
+    Future.delayed(Duration.zero, () {
+      widgetListeners();
+    });
   }
 
   @override
   void dispose() {
+    widget.controller.resetNavigation(resetListeners: true);
     super.dispose();
   }
 
   widgetListeners() {
+    widget.controller.addListener(() {
+      if (mounted) setState(() {});
+    });
     widget.controller.addOnBackPageListener(() {
-      currentBottomIndex = widget.controller.currentBottomIndex;
       BottomIcon bottomIcon =
           widget.children[widget.controller.currentBottomIndex];
       if (bottomIcon.hideBottomNavigationBar == true) {
@@ -66,15 +70,6 @@ class _SmartPageBottomNavigationBarState
       } else if (widget.controller.bottomNavigationBarIsHidden) {
         widget.controller.showBottomNavigationBar();
       }
-      if (mounted) setState(() {});
-    });
-    widget.controller.addOnInsertPageListener((page) {
-      if (mounted) setState(() {});
-    });
-    widget.controller.addOnPageChangedListener((index) {
-      if (mounted) setState(() {});
-    });
-    widget.controller.addOnResetNavigation(() {
       if (mounted) setState(() {});
     });
     widget.controller.addOnBottomNavigationBarChanged((int index) async {
@@ -92,8 +87,6 @@ class _SmartPageBottomNavigationBarState
         enabledToGoPage = widget.onTap!(currentIndex, context);
       }
       if (enabledToGoPage) {
-        currentBottomIndex =
-            widget.controller.currentBottomIndex = currentIndex;
         StatefulWidget pageToRedirect =
             widget.controller.initialPages[currentIndex];
         if (widget.controller.pages.length >
@@ -110,10 +103,10 @@ class _SmartPageBottomNavigationBarState
             hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
           );
         }
-        //widget.controller.pageHistoryTabSelected.add(currentBottomIndex);
         if (mounted) setState(() {});
       }
     });
+    setState(() {});
   }
 
   void defineOptions() {
@@ -190,7 +183,8 @@ class _SmartPageBottomNavigationBarState
                                     var currentIndex =
                                         widget.children.indexOf(bottomIcon);
                                     bool isSelected =
-                                        currentBottomIndex == currentIndex;
+                                        widget.controller.currentBottomIndex ==
+                                            currentIndex;
                                     Color color = isSelected
                                         ? options.selectedColor!
                                         : options.unselectedColor!;
@@ -310,7 +304,8 @@ class _SmartPageBottomNavigationBarState
                                 visible: widget.options?.showIndicator == true,
                                 child: AnimatedPositioned(
                                   top: 0,
-                                  left: borderWidth * currentBottomIndex,
+                                  left: borderWidth *
+                                      widget.controller.currentBottomIndex,
                                   child: Container(
                                     width: borderWidth,
                                     height: 2,
