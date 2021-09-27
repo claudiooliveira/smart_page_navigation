@@ -78,7 +78,7 @@ class _SmartPageBottomNavigationBarState
           widget.controller.bottomNavigationBarIsHidden;
       if (mounted) setState(() {});
     });
-    widget.controller.addOnBottomOptionSelected((currentIndex) {
+    widget.controller.addOnBottomOptionSelected((currentIndex) async {
       var bottomIcon = widget.children[currentIndex];
       bool enabledToGoPage = true;
       if (widget.onTap != null) {
@@ -87,24 +87,31 @@ class _SmartPageBottomNavigationBarState
       if (enabledToGoPage) {
         StatefulWidget pageToRedirect =
             widget.controller.initialPages[currentIndex];
-        if (widget.controller.pages.length >
-            widget.controller.initialPages.length) {
-          widget.controller.insertPage(
-            pageToRedirect,
-            ignoreTabHistory: true,
-            hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
-          );
-        } else {
-          widget.controller.goToPage(
-            currentIndex,
-            animated: false,
-            hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
-          );
-        }
+        // if (widget.controller.pages.length >
+        //     widget.controller.initialPages.length) {
+        //   await widget.controller.insertPage(
+        //     pageToRedirect,
+        //     ignoreTabHistory: true,
+        //     animated: true,
+        //     hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
+        //   );
+        // } else {
+        //   await widget.controller.goToPage(
+        //     currentIndex,
+        //     animated: true,
+        //     hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
+        //   );
+        // }
+        await widget.controller.goToPage(
+          widget.controller.pages.indexOf(pageToRedirect),
+          animated: true,
+          hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
+        );
         if (widget.controller.pages.length >
             widget.controller.initialPages.length) {
           widget.controller.currentBottomIndex = currentIndex;
           widget.controller.pageHistoryTabSelected.add(currentIndex);
+          print("adding ${widget.controller.pageHistoryTabSelected}");
         }
         if (mounted) setState(() {});
       }

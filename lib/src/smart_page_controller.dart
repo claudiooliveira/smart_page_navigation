@@ -10,7 +10,7 @@ class SmartPageController {
   List<int> pageHistory = [0];
   List<int> pageHistoryTabSelected = [0];
   int currentBottomIndex = 0;
-  Duration duration = Duration(milliseconds: 500);
+  Duration duration = Duration(milliseconds: 300);
   int _currentPageIndex = 0;
   bool _hideBottomNavigationBar = false;
   late BuildContext context;
@@ -90,12 +90,13 @@ class SmartPageController {
     this._onListener.add(listener);
   }
 
-  insertPage(
+  Future? insertPage(
     StatefulWidget newPage, {
     bool? goToNewPage = true,
     bool? ignoreTabHistory = false,
+    bool? animated = true,
     bool? hideBottomNavigationBar,
-  }) {
+  }) async {
     if (goToNewPage == null) {
       goToNewPage = true;
     }
@@ -115,14 +116,14 @@ class SmartPageController {
       pageHistoryTabSelected.add(pageHistoryTabSelected.length > 0
           ? pageHistoryTabSelected[pageHistoryTabSelected.length - 1]
           : 0);
+      print("AQUI pageHistoryTabSelected $pageHistoryTabSelected");
     }
     this
         ._onInsertPageListeners
         .forEach((func) => func(newPage, _currentPageIndex + 1));
     if (goToNewPage) {
-      goToPage(_currentPageIndex + 1,
-          animated: ignoreTabHistory == false,
-          dontUpdateHistoryTabSelected: true);
+      return await goToPage(_currentPageIndex + 1,
+          animated: animated, dontUpdateHistoryTabSelected: true);
     } else {
       this
           ._onBottomNavigationBarChanged
@@ -136,12 +137,12 @@ class SmartPageController {
     bool? animated = true,
     bool? dontUpdateHistoryTabSelected,
     bool? hideBottomNavigationBar,
-  }) {
+  }) async {
     if (dontUpdateHistoryTabSelected == false ||
         dontUpdateHistoryTabSelected == null) {
       pageHistoryTabSelected.add(index);
+      print('ADICIONADA $pageHistoryTabSelected');
     }
-    _currentPageIndex = index;
     if (index < initialPages.length &&
         (dontUpdateHistoryTabSelected == null ||
             dontUpdateHistoryTabSelected == false)) {
@@ -155,12 +156,22 @@ class SmartPageController {
         this._hideBottomNavigationBar = false;
       }
     }
-    // if (animated == true) {
-    //   _animateToPage(index);
-    // } else {
-    //   _pageViewController!.jumpToPage(index);
-    // }
-    _pageViewController!.jumpToPage(index);
+    print("PAGES $pages");
+    print("pageHistoryTabSelected $pageHistoryTabSelected");
+    if (animated == true) {
+      var nextPage = pages[index];
+      print(
+          'nextPage! $nextPage myIndex: $index _currentPageIndex+1:${_currentPageIndex + 1} _currentPageIndex: $_currentPageIndex');
+      pages.insert(_currentPageIndex + 1, nextPage);
+      this._onListener.forEach((func) => func());
+      await _animateToPage(_currentPageIndex + 1);
+      _pageViewController!.jumpToPage(index);
+      pages.removeAt(_currentPageIndex + 1);
+    } else {
+      _pageViewController!.jumpToPage(index);
+    }
+    _currentPageIndex = index;
+    //_pageViewController!.jumpToPage(index);
     this
         ._onBottomNavigationBarChanged
         .forEach((func) => func(this.currentBottomIndex));
@@ -168,8 +179,8 @@ class SmartPageController {
     this._onListener.forEach((func) => func());
   }
 
-  _animateToPage(int index, {Curve? curve}) {
-    _pageViewController!.animateToPage(
+  Future<void> _animateToPage(int index, {Curve? curve}) {
+    return _pageViewController!.animateToPage(
       index,
       duration: duration,
       //curve: Curves.fastOutSlowIn,
@@ -218,26 +229,28 @@ class SmartPageController {
   Future<bool> back() async {
     var lastPage =
         pageHistory.length >= 2 ? pageHistory[pageHistory.length - 1] : 0;
-    if (pages.length > initialPages.length && lastPage > 0) {
-      if (pages.length > lastPage) {
-        pages.removeAt(_currentPageIndex);
-        _currentPageIndex--;
-      }
-    }
+    // if (pages.length > initialPages.length && lastPage > 0) {
+    //   if (pages.length > lastPage) {
+    //     pages.removeAt(_currentPageIndex);
+    //     _currentPageIndex--;
+    //   }
+    // }
 
-    /*var pageOnBack =
+    var pageOnBack =
         pageHistory.length >= 2 ? pageHistory[pageHistory.length - 2] : 0;
+    print("pageOnBack>>> $pageOnBack $pages");
     _pageViewController!.animateToPage(
       pageOnBack,
       duration: Duration(milliseconds: 250),
       curve: Curves.easeInToLinear,
     );
     if (pages.length > initialPages.length && lastPage > 0) {
+      print("remove?");
       await Future.delayed(Duration(milliseconds: 250), () {
-        pages.removeAt(lastPage);
+        pages.removeAt(_currentPageIndex);
       });
       _currentPageIndex--;
-    }*/
+    }
 
     if (_pageViewController!.page! > 0) {
       if (pageHistory.length >= 2) {
@@ -259,9 +272,11 @@ class SmartPageController {
 
       _currentPageIndex = lastPage;
 
-      _pageViewController!.jumpToPage(
-        lastPage,
-      );
+      // _pageViewController!.jumpToPage(
+      //   lastPage,
+      // );
+
+      print("PAGES BACK $pages $pageHistoryTabSelected");
 
       this._onBackPageListeners.forEach((func) => func());
       this._onListener.forEach((func) => func());
@@ -270,7 +285,4 @@ class SmartPageController {
     }
     return true;
   }
-
-  @override
-  bool updateShouldNotify(SmartPageController oldWidget) => false;
 }
