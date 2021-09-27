@@ -187,7 +187,7 @@ class SmartPageController {
     return this._pageViewController;
   }
 
-  resetNavigation({bool? resetListeners = false}) {
+  resetNavigation() {
     pages.clear();
     pages.addAll(this.initialPages);
     pageHistory = [0];
@@ -270,7 +270,4 @@ class SmartPageController {
     }
     return true;
   }
-
-  @override
-  bool updateShouldNotify(SmartPageController oldWidget) => false;
 }

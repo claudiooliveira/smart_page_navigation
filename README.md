@@ -55,6 +55,12 @@ class _MyHomePageState extends State<MyHomePage> {
       initialPages: pages,
       context: context,
     );
+
+    //Recommended if you want to check which page is open to perform some
+    //specific action such as showing/hiding widgets.
+    controller.addListener(() {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -103,15 +109,43 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 ```
 
-### Controller Initialization
+## Controller Initialization
 
-`context`: BuildContext
-`initialPages`: List of StatefulWidgets (pages of your app)\
-`initialPage`: index of first page of initialPages
+```dart
+  //Attention! It is recommended that .newInstance 
+  //be called only once during your application's lifecycle.
+  //To get the controller instance on other pages use .getInstance().
 
-### Controller Methods
+  controller = SmartPageController.newInstance(
+    initialPages: [
+      PageA(),
+      PageB(),
+      PageC(),
+    ],
+    context: context,
+  );
+```
 
+`context`: BuildContext.\
+`initialPages`: List of StatefulWidgets (pages of your app).\
+`initialPage`: index of first page of initialPages. `Default: 0`
+
+### Properties
+
+`List<StatefulWidget> pages`: Stack of pages.\
+`List<StatefulWidget> initialPages`: Initial page stack.\
+`int currentBottomIndex`: Index of selected bottom navigation bar option.
+
+### Methods
+
+`newInstance(StatefulWidget newPage)`: Inserts a new page into the stack. By default the page is displayed, but you can prevent this by setting goToNewPage equal to false.\
+`insertPage(StatefulWidget newPage)`: Inserts a new page into the stack. By default the page is displayed, but you can prevent this by setting goToNewPage equal to false.\
+`goToPage(int index)`: Navigate to index page.\
 `selectBottomTab(int index)`: This method navigates to the screen configured in the index position of the bottom navigation bar.\
+`resetNavigation()`: Clears all navigation.\
+`showBottomNavigationBar()`: Show bottom navigation.\
+`hideBottomNavigationBar()`: Hide bottom navigation.\
+`back()`: Return to previous page.
 
 ## Listeners
 
@@ -123,20 +157,31 @@ class _MyHomePageState extends State<MyHomePage> {
 `addOnPageChangedListener(Function(int index) listener)`: Method that listens when the current page index changes.\
 `addOnResetNavigation(Function listener)`: Method that listens when navigation is reset.
 
-### Bottom Navigation Bar
+## SmartPageBottomNavigationBar
 
-`controller`: Instance of SmartPageController\
-`children`: List of BottomIcon\
-`bool onTap(int index)`: Callback method when a bottom bar button is pressed. Return false if you want to block browsing.\
-`options`: SmartPageBottomNavigationOptions instance with styling options
+`SmartPageController controller`: Instance of SmartPageController.\
+`List<BottomIcon> children`: List of BottomIcon.\
+`bool onTap(int index)?`: Callback method when a bottom bar button is pressed. Return false if you want to block browsing.\
+`SmartPageBottomNavigationOptions? options`: SmartPageBottomNavigationOptions instance with styling options.
+
+### BottomIcon
+
+`String? title`: Text displayed below option icon (if any).\
+`TextStyle? textStyle`: Title text style.\
+`IconData? icon`: Option icon.\
+`bool? hideBottomNavigationBar`: Hides the bottom navigation bar when the option is selected.\
+`Widget? badge`: Display a widget as a badge.\
+`Color? badgeColor`: Badge color.\
+`Widget? selectedWidget`: If you want to customize the content of the option, you can add the selectedWidget, then you will have to configure the unselectedWidget as well. `Warning: You must obligatorily use selectedWidget/unselectedWidget OR title for the option content to be displayed.`\
+`Widget? unselectedWidget`: Widget displayed when the option is not selected.
 
 ### SmartPageBottomNavigationOptions
 
-`height`: (double) Widget height\
-`showIndicator`: (bool) Show/hide top indicator of selected option\
-`indicatorColor`: (Color) Top indicator color\
-`backgroundColor`: (Color) Widget background color\
-`showBorder`: (bool) Show/hide border\
-`borderColor`: (Color) Border color\
-`selectedColor`: (Color) Icon and text color when option is selected\
-`unselectedColor`: (Color) Icon and text color when the option is not selected
+`height`: (double) Widget height.\
+`showIndicator`: (bool) Show/hide top indicator of selected option.\
+`indicatorColor`: (Color) Top indicator color.\
+`backgroundColor`: (Color) Widget background color.\
+`showBorder`: (bool) Show/hide border.\
+`borderColor`: (Color) Border color.\
+`selectedColor`: (Color) Icon and text color when option is selected.\
+`unselectedColor`: (Color) Icon and text color when the option is not selected.
