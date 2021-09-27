@@ -78,10 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
           controller: controller,
           options: SmartPageBottomNavigationOptions(),
           children: [
-            BottomIcon(icon: Icons.home, title: "Início"),
+            BottomIcon(icon: Icons.home, title: "Home"),
             BottomIcon(
               icon: Icons.shopping_cart,
-              title: "Carrinho",
+              title: "Cart",
               badge: Text(
                 "3",
                 style: TextStyle(
@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             BottomIcon(
               icon: Icons.settings,
-              title: "Config.",
+              title: "Settings",
               //hideBottomNavigationBar: true,
             ),
           ],
@@ -112,18 +112,18 @@ class _MyHomePageState extends State<MyHomePage> {
 ## Controller Initialization
 
 ```dart
-  //Attention! It is recommended that .newInstance 
-  //be called only once during your application's lifecycle.
-  //To get the controller instance on other pages use .getInstance().
+//Attention! It is recommended that .newInstance 
+//be called only once during your application's lifecycle.
+//To get the controller instance on other pages use .getInstance().
 
-  controller = SmartPageController.newInstance(
-    initialPages: [
-      PageA(),
-      PageB(),
-      PageC(),
-    ],
-    context: context,
-  );
+controller = SmartPageController.newInstance(
+  initialPages: [
+    PageA(),
+    PageB(),
+    PageC(),
+  ],
+  context: context,
+);
 ```
 
 `context`: BuildContext.\
