@@ -22,20 +22,13 @@ class _SmartPageNavigationState extends State<SmartPageNavigation> {
   @override
   void initState() {
     super.initState();
-    widget.controller.addOnBackPageListener(() {
-      if (mounted) setState(() {});
-    });
-    widget.controller.addOnInsertPageListener((page) {
-      if (mounted) setState(() {});
-    });
-    widget.controller.addOnPageChangedListener((index) {
+    widget.controller.addListener(() {
       if (mounted) setState(() {});
     });
   }
 
   @override
   void dispose() {
-    //widget.controller.getPageViewController()?.dispose();
     super.dispose();
   }
 

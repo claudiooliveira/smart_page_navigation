@@ -55,3 +55,7 @@
 ## 1.0.14
 
 * Fix bottom navigation bar
+
+## 1.1.0
+
+* Fixed package architecture.

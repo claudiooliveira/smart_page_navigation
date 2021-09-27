@@ -6,7 +6,7 @@ class SmartPageBottomNavigationBar extends StatefulWidget {
   SmartPageController controller;
   SmartPageBottomNavigationOptions? options;
   List<BottomIcon> children;
-  bool Function(int index, BuildContext context)? onTap;
+  bool Function(int index)? onTap;
   SmartPageBottomNavigationBar({
     Key? key,
     required this.controller,
@@ -48,6 +48,7 @@ class _SmartPageBottomNavigationBarState
       options.slideDownDuration = Duration(milliseconds: 150);
 
     widgetListeners();
+    setState(() {});
   }
 
   @override
@@ -56,6 +57,9 @@ class _SmartPageBottomNavigationBarState
   }
 
   widgetListeners() {
+    widget.controller.addListener(() {
+      if (mounted) setState(() {});
+    });
     widget.controller.addOnBackPageListener(() {
       BottomIcon bottomIcon =
           widget.children[widget.controller.currentBottomIndex];
@@ -66,15 +70,6 @@ class _SmartPageBottomNavigationBarState
       }
       if (mounted) setState(() {});
     });
-    widget.controller.addOnInsertPageListener((page) {
-      if (mounted) setState(() {});
-    });
-    widget.controller.addOnPageChangedListener((index) {
-      if (mounted) setState(() {});
-    });
-    widget.controller.addOnResetNavigation(() {
-      if (mounted) setState(() {});
-    });
     widget.controller.addOnBottomNavigationBarChanged((int index) async {
       if (!bottomNavigationBarIsHidden) {
         await Future.delayed(animDuration, () {});
@@ -83,11 +78,11 @@ class _SmartPageBottomNavigationBarState
           widget.controller.bottomNavigationBarIsHidden;
       if (mounted) setState(() {});
     });
-    widget.controller.addOnBottomOptionSelected((currentIndex, context) {
+    widget.controller.addOnBottomOptionSelected((currentIndex) {
       var bottomIcon = widget.children[currentIndex];
       bool enabledToGoPage = true;
       if (widget.onTap != null) {
-        enabledToGoPage = widget.onTap!(currentIndex, context);
+        enabledToGoPage = widget.onTap!(currentIndex);
       }
       if (enabledToGoPage) {
         StatefulWidget pageToRedirect =
@@ -133,7 +128,6 @@ class _SmartPageBottomNavigationBarState
 
   @override
   Widget build(BuildContext context) {
-    defineOptions();
     return LayoutBuilder(builder: (context, constraints) {
       final borderWidth = (constraints.maxWidth / widget.children.length);
       return Visibility(
@@ -197,7 +191,7 @@ class _SmartPageBottomNavigationBarState
                                         : options.unselectedColor!;
                                     if (bottomIcon.badgeColor == null) {
                                       bottomIcon.badgeColor =
-                                          widget.options!.indicatorColor!;
+                                          options.indicatorColor!;
                                     }
                                     return InkWell(
                                       onTap: () {
@@ -308,7 +302,7 @@ class _SmartPageBottomNavigationBarState
                                 ),
                               ),
                               Visibility(
-                                visible: widget.options?.showIndicator == true,
+                                visible: options.showIndicator == true,
                                 child: AnimatedPositioned(
                                   top: 0,
                                   left: borderWidth *

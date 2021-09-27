@@ -38,6 +38,12 @@ class _MyHomePageState extends State<MyHomePage> {
       initialPages: pages,
       context: context,
     );
+
+    //Recommended if you want to check which page is open to perform some
+    //specific action such as showing/hiding widgets.
+    controller.addListener(() {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -55,10 +61,10 @@ class _MyHomePageState extends State<MyHomePage> {
           controller: controller,
           options: SmartPageBottomNavigationOptions(),
           children: [
-            BottomIcon(icon: Icons.home, title: "Início"),
+            BottomIcon(icon: Icons.home, title: "Home"),
             BottomIcon(
               icon: Icons.shopping_cart,
-              title: "Carrinho",
+              title: "Cart",
               badge: Text(
                 "3",
                 style: TextStyle(
@@ -71,11 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             BottomIcon(
               icon: Icons.settings,
-              title: "Config.",
+              title: "Settings",
               //hideBottomNavigationBar: true,
             ),
           ],
-          onTap: (int index, BuildContext context) {
+          onTap: (int index) {
             print("Clicked at index $index");
             return true;
           },
