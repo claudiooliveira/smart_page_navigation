@@ -26,7 +26,6 @@ class _SmartPageBottomNavigationBarState
 
   bool bottomNavigationBarIsHidden = false;
   Duration animDuration = Duration(milliseconds: 150);
-  int currentBottomIndex = 0;
 
   @override
   void initState() {
@@ -58,7 +57,6 @@ class _SmartPageBottomNavigationBarState
 
   widgetListeners() {
     widget.controller.addOnBackPageListener(() {
-      currentBottomIndex = widget.controller.currentBottomIndex;
       BottomIcon bottomIcon =
           widget.children[widget.controller.currentBottomIndex];
       if (bottomIcon.hideBottomNavigationBar == true) {
@@ -92,8 +90,6 @@ class _SmartPageBottomNavigationBarState
         enabledToGoPage = widget.onTap!(currentIndex, context);
       }
       if (enabledToGoPage) {
-        currentBottomIndex =
-            widget.controller.currentBottomIndex = currentIndex;
         StatefulWidget pageToRedirect =
             widget.controller.initialPages[currentIndex];
         if (widget.controller.pages.length >
@@ -106,11 +102,15 @@ class _SmartPageBottomNavigationBarState
         } else {
           widget.controller.goToPage(
             currentIndex,
-            animated: false,
+            animated: true,
             hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
           );
         }
-        //widget.controller.pageHistoryTabSelected.add(currentBottomIndex);
+        if (widget.controller.pages.length >
+            widget.controller.initialPages.length) {
+          widget.controller.currentBottomIndex = currentIndex;
+          widget.controller.pageHistoryTabSelected.add(currentIndex);
+        }
         if (mounted) setState(() {});
       }
     });
@@ -190,7 +190,8 @@ class _SmartPageBottomNavigationBarState
                                     var currentIndex =
                                         widget.children.indexOf(bottomIcon);
                                     bool isSelected =
-                                        currentBottomIndex == currentIndex;
+                                        widget.controller.currentBottomIndex ==
+                                            currentIndex;
                                     Color color = isSelected
                                         ? options.selectedColor!
                                         : options.unselectedColor!;
@@ -200,8 +201,8 @@ class _SmartPageBottomNavigationBarState
                                     }
                                     return InkWell(
                                       onTap: () {
-                                        widget.controller.selectBottomTab(
-                                            currentIndex, context);
+                                        widget.controller
+                                            .selectBottomTab(currentIndex);
                                         setState(() {});
                                       },
                                       child: Container(
@@ -310,7 +311,8 @@ class _SmartPageBottomNavigationBarState
                                 visible: widget.options?.showIndicator == true,
                                 child: AnimatedPositioned(
                                   top: 0,
-                                  left: borderWidth * currentBottomIndex,
+                                  left: borderWidth *
+                                      widget.controller.currentBottomIndex,
                                   child: Container(
                                     width: borderWidth,
                                     height: 2,

@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-class SmartPageController extends InheritedWidget {
+class SmartPageController {
+  static late SmartPageController _instance;
   PageController? _pageViewController;
   List<StatefulWidget> pages = [];
   List<StatefulWidget> initialPages = [];
@@ -12,6 +13,7 @@ class SmartPageController extends InheritedWidget {
   Duration duration = Duration(milliseconds: 500);
   int _currentPageIndex = 0;
   bool _hideBottomNavigationBar = false;
+  late BuildContext context;
 
   int? initialPage = 0;
   bool? keepPage = true;
@@ -22,30 +24,40 @@ class SmartPageController extends InheritedWidget {
   List<Function(int index, BuildContext context)> _onBottomOptionSelected = [];
   List<Function> _onResetNavigation = [];
 
-  SmartPageController({required Widget child, Key? key})
-      : super(key: key, child: child);
-
-  SmartPageController init({
-    required List<StatefulWidget> initialPages,
+  SmartPageController({
+    required this.initialPages,
+    required this.context,
     int? initialPage,
     bool? keepPage,
   }) {
-    if (_pageViewController == null) {
-      this.initialPages = initialPages;
-      this.initialPage = initialPage == null ? 0 : initialPage;
-      this.keepPage = keepPage == null ? true : keepPage;
-      this._pageViewController = PageController(
-        initialPage: this.initialPage!,
-        keepPage: this.keepPage!,
-      );
-      this._currentPageIndex = this.initialPage!;
-      this.pages.addAll(this.initialPages);
-    }
-    return this;
+    this.initialPage = initialPage == null ? 0 : initialPage;
+    this.keepPage = keepPage == null ? true : keepPage;
+    this._pageViewController = PageController(
+      initialPage: this.initialPage!,
+      keepPage: this.keepPage!,
+    );
+    this._currentPageIndex = this.initialPage!;
+    this.pages.addAll(this.initialPages);
   }
 
-  static SmartPageController of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<SmartPageController>()!;
+  static SmartPageController newInstance({
+    required List<StatefulWidget> initialPages,
+    required BuildContext context,
+    int? initialPage,
+    bool? keepPage,
+  }) {
+    _instance = new SmartPageController(
+      initialPages: initialPages,
+      context: context,
+      initialPage: initialPage,
+      keepPage: keepPage,
+    );
+    return _instance;
+  }
+
+  static SmartPageController getInstance() {
+    return _instance;
+  }
 
   addOnBackPageListener(Function listener) {
     this._onBackPageListeners.add(listener);
@@ -157,13 +169,9 @@ class SmartPageController extends InheritedWidget {
     );
   }
 
-  selectBottomTab(int index, BuildContext context) {
+  selectBottomTab(int index) {
     this._onBottomNavigationBarChanged.forEach((func) => func(index));
     this._onBottomOptionSelected.forEach((func) => func(index, context));
-    if (pages.length > initialPages.length) {
-      //this.currentBottomIndex = index;
-      //this.pageHistoryTabSelected.add(index);
-    }
   }
 
   PageController? getPageViewController() {

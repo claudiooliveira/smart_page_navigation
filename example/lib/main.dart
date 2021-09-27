@@ -157,7 +157,7 @@ class _PageBState extends State<PageB> {
             SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
-                controller.selectBottomTab(2, context);
+                controller.selectBottomTab(2);
               },
               child: Text("Go To Config"),
             ),
@@ -274,7 +274,6 @@ class _ExternalPageState extends State<ExternalPage> {
               SizedBox(height: 60),
               ElevatedButton(
                 onPressed: () {
-                  controller.resetNavigation();
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
