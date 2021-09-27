@@ -102,7 +102,7 @@ class _SmartPageBottomNavigationBarState
         } else {
           widget.controller.goToPage(
             currentIndex,
-            animated: true,
+            animated: false,
             hideBottomNavigationBar: bottomIcon.hideBottomNavigationBar == true,
           );
         }

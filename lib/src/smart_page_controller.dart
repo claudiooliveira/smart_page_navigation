@@ -148,11 +148,11 @@ class SmartPageController {
         this._hideBottomNavigationBar = false;
       }
     }
-    /*if (animated == true) {
-      _animateToPage(index);
-    } else {
-      _pageViewController!.jumpToPage(index);
-    }*/
+    // if (animated == true) {
+    //   _animateToPage(index);
+    // } else {
+    //   _pageViewController!.jumpToPage(index);
+    // }
     _pageViewController!.jumpToPage(index);
     this
         ._onBottomNavigationBarChanged
