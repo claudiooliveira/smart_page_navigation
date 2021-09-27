@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_page_navigation/smart_page_navigation.dart';
 
 void main() {
-  runApp(
-    SmartPageController(
-      child: MyApp(),
-    ),
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -37,13 +33,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
+    controller = SmartPageController.newInstance(
+      initialPages: pages,
+      context: context,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    controller = SmartPageController.of(context).init(
-      initialPages: pages,
-    );
     return WillPopScope(
       onWillPop: () async => controller.back(),
       child: Scaffold(
@@ -95,11 +93,10 @@ class PageA extends StatefulWidget {
 }
 
 class _PageAState extends State<PageA> {
-  late SmartPageController controller;
+  late SmartPageController controller = SmartPageController.getInstance();
 
   @override
   Widget build(BuildContext context) {
-    controller = SmartPageController.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -130,11 +127,10 @@ class PageB extends StatefulWidget {
 }
 
 class _PageBState extends State<PageB> {
-  late SmartPageController controller;
+  late SmartPageController controller = SmartPageController.getInstance();
 
   @override
   Widget build(BuildContext context) {
-    controller = SmartPageController.of(context);
     return Container(
       color: Colors.redAccent,
       child: Center(
@@ -180,11 +176,10 @@ class PageC extends StatefulWidget {
 }
 
 class _PageCState extends State<PageC> {
-  late SmartPageController controller;
+  late SmartPageController controller = SmartPageController.getInstance();
 
   @override
   Widget build(BuildContext context) {
-    controller = SmartPageController.of(context);
     return Container(
       color: Colors.blueAccent,
       child: Center(
@@ -219,10 +214,10 @@ class PageChild extends StatefulWidget {
 }
 
 class _PageChildState extends State<PageChild> {
-  late SmartPageController controller;
+  late SmartPageController controller = SmartPageController.getInstance();
+
   @override
   Widget build(BuildContext context) {
-    controller = SmartPageController.of(context);
     return Container(
       color: Colors.blueGrey,
       child: Center(
@@ -258,10 +253,9 @@ class ExternalPage extends StatefulWidget {
 }
 
 class _ExternalPageState extends State<ExternalPage> {
-  late SmartPageController controller;
+  late SmartPageController controller = SmartPageController.getInstance();
   @override
   Widget build(BuildContext context) {
-    controller = SmartPageController.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("External Page"),
