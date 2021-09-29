@@ -128,6 +128,7 @@ class _SmartPageBottomNavigationBarState
 
   @override
   Widget build(BuildContext context) {
+    defineOptions();
     return LayoutBuilder(builder: (context, constraints) {
       final borderWidth = (constraints.maxWidth / widget.children.length);
       return Visibility(

@@ -59,3 +59,8 @@
 ## 1.1.0
 
 * Fixed package architecture.
+
+## 1.1.0
+
+* Updated doc
+* Added refreshViews method

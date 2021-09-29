@@ -12,7 +12,7 @@ Created by Claudio Oliveira (https://twitter.com/cldlvr)
 
 ```yaml
 dependencies:
-  smart_page_navigation: ^1.1.0 #latest version
+  smart_page_navigation: ^1.1.1 #latest version
 ```
 
 ### Easy to use
@@ -145,6 +145,7 @@ controller = SmartPageController.newInstance(
 `resetNavigation()`: Clears all navigation.\
 `showBottomNavigationBar()`: Show bottom navigation.\
 `hideBottomNavigationBar()`: Hide bottom navigation.\
+`refreshViews()`: Update widget state.\
 `back()`: Return to previous page.
 
 ## Listeners

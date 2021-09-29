@@ -187,6 +187,10 @@ class SmartPageController {
     return this._pageViewController;
   }
 
+  void refreshViews() {
+    this._onListener.forEach((func) => func());
+  }
+
   resetNavigation() {
     pages.clear();
     pages.addAll(this.initialPages);
