@@ -23,7 +23,6 @@ class _SmartPageNavigationState extends State<SmartPageNavigation> {
   void initState() {
     super.initState();
     widget.controller.addListener(() {
-      print("boraaaa");
       if (mounted) setState(() {});
     });
   }

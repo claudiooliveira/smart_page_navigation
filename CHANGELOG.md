@@ -60,7 +60,7 @@
 
 * Fixed package architecture.
 
-## 1.1.0
+## 1.1.1
 
 * Updated doc
 * Added refreshViews method
