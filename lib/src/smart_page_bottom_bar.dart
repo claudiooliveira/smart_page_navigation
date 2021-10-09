@@ -32,21 +32,6 @@ class _SmartPageBottomNavigationBarState
     super.initState();
 
     defineOptions();
-
-    if (options.showBorder == null) options.showBorder = true;
-    if (options.showIndicator == null) options.showIndicator = true;
-    if (options.selectedColor == null)
-      options.selectedColor = Colors.blueAccent;
-    if (options.unselectedColor == null) options.unselectedColor = Colors.grey;
-    if (options.backgroundColor == null) options.backgroundColor = Colors.white;
-    if (options.borderColor == null)
-      options.borderColor = Color(0xff707070).withOpacity(0.20);
-    if (options.indicatorColor == null)
-      options.indicatorColor = Colors.blueAccent;
-    if (options.height == null) options.height = 50;
-    if (options.slideDownDuration == null)
-      options.slideDownDuration = Duration(milliseconds: 150);
-
     widgetListeners();
     setState(() {});
   }
@@ -124,6 +109,19 @@ class _SmartPageBottomNavigationBarState
             selectedColor: Colors.blueAccent,
             unselectedColor: Colors.grey,
           );
+    if (options.showBorder == null) options.showBorder = true;
+    if (options.showIndicator == null) options.showIndicator = true;
+    if (options.selectedColor == null)
+      options.selectedColor = Colors.blueAccent;
+    if (options.unselectedColor == null) options.unselectedColor = Colors.grey;
+    if (options.backgroundColor == null) options.backgroundColor = Colors.white;
+    if (options.borderColor == null)
+      options.borderColor = Color(0xff707070).withOpacity(0.20);
+    if (options.indicatorColor == null)
+      options.indicatorColor = Colors.blueAccent;
+    if (options.height == null) options.height = 50;
+    if (options.slideDownDuration == null)
+      options.slideDownDuration = Duration(milliseconds: 150);
   }
 
   @override

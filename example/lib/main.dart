@@ -287,8 +287,11 @@ class _ExternalPageState extends State<ExternalPage> {
                     ),
                     (route) => false,
                   );
+                  Future.delayed(Duration(milliseconds: 100), () {
+                    controller.resetNavigation(redirectToBottomOptionIndex: 2);
+                  });
                 },
-                child: Text("Go to Home and reset navigation stack"),
+                child: Text("Reset navigation stack and go to Settings"),
               ),
             ],
           ),

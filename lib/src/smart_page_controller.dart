@@ -191,7 +191,7 @@ class SmartPageController {
     this._onListener.forEach((func) => func());
   }
 
-  resetNavigation() {
+  resetNavigation({int? redirectToBottomOptionIndex}) {
     pages.clear();
     pages.addAll(this.initialPages);
     pageHistory = [0];
@@ -200,6 +200,9 @@ class SmartPageController {
     _currentPageIndex = 0;
     this._onResetNavigation.forEach((func) => func());
     this._onListener.forEach((func) => func());
+    if (redirectToBottomOptionIndex != null) {
+      this.selectBottomTab(redirectToBottomOptionIndex);
+    }
   }
 
   showBottomNavigationBar() {

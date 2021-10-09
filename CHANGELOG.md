@@ -64,3 +64,8 @@
 
 * Updated doc
 * Added refreshViews method
+
+## 1.1.2
+
+* Fix problem with null values in SmartPageBottomNavigationOptions
+* Added redirectToBottomOptionIndex to redirect navigation after resetting it

@@ -138,7 +138,8 @@ controller = SmartPageController.newInstance(
 
 ### Methods
 
-`newInstance(StatefulWidget newPage)`: Inserts a new page into the stack. By default the page is displayed, but you can prevent this by setting goToNewPage equal to false.\
+`newInstance()`: Create a new instance of the controller.\
+`getInstance()`: Get the current instance of the controller.\
 `insertPage(StatefulWidget newPage)`: Inserts a new page into the stack. By default the page is displayed, but you can prevent this by setting goToNewPage equal to false.\
 `goToPage(int index)`: Navigate to index page.\
 `selectBottomTab(int index)`: This method navigates to the screen configured in the index position of the bottom navigation bar.\
